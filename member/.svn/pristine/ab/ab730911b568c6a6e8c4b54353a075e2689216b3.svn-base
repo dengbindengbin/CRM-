@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.SmallClassifyMapper">
+	<resultMap id="BaseResultMap" type="com._520it.crm.domain.SmallClassify">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="parentId" column="parent_id" />
+	</resultMap>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		smallclassify
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insert" parameterType="com._520it.crm.domain.SmallClassify"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into smallclassify (name)
+		values (#{name})
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.SmallClassify">
+		update
+		smallclassify
+		set name = #{name},parent_id = #{parentId}
+		where id =
+		#{id,jdbcType=BIGINT}
+	</update>
+
+	<!-- 特有 -->
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select id,name,parent_id
+		from smallclassify
+		where id =
+		#{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap">
+		select * from smallclassify
+	</select>
+
+	<select id="selectByClassify" resultMap="BaseResultMap">
+		select
+		s.id,s.name,s.parent_id, c.id,c.name
+		from smallclassify s left join
+		classify c on s.parent_id = c.id
+		where parent_id = #{parentId}
+	</select>
+
+
+	<sql id="conditionSql">
+		<where>
+		</where>
+	</sql>
+	<select id="queryPageCount" resultType="long">
+		select count(*) from smallclassify
+		<include refid="conditionSql" />
+	</select>
+	<select id="queryPageData" resultMap="BaseResultMap">
+		select * from smallclassify
+		<include refid="conditionSql" />
+		limit #{start},#{rows}
+	</select>
+	
+</mapper>

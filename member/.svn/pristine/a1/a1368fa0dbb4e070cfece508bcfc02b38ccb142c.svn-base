@@ -1,0 +1,87 @@
+package com._520it.crm.service.impl;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com._520it.crm.domain.SmallClassify;
+import com._520it.crm.mapper.SmallClassifyMapper;
+import com._520it.crm.page.PageResult;
+import com._520it.crm.query.QueryObject;
+import com._520it.crm.service.ISmallClassifyService;
+
+@Service
+public class SmallClassifyServiceImpl implements ISmallClassifyService {
+	@Autowired
+	private SmallClassifyMapper kindMapper;
+
+	public int deleteByPrimaryKey(Long id) {
+		// 先删除中间表关系
+		kindMapper.deleteRelation(id);
+		return kindMapper.deleteByPrimaryKey(id);
+	}
+
+	public int insert(SmallClassify record) {
+		// 先保存角色,才有id,才能将进行关联
+		int count = kindMapper.insert(record);
+//		List<Product> prodcut = record.getProducts();
+		// 判断是否有权限集合
+//		if (prodcut.size() > 0) {
+//			for (Product p : prodcut) {
+//				// 处理中间表
+//				kindMapper.insertRelation(record.getId(), p.getId());
+//			}
+//		}
+		return count;
+	}
+
+	public SmallClassify selectByPrimaryKey(Long id) {
+		return kindMapper.selectByPrimaryKey(id);
+	}
+
+	public List<SmallClassify> selectAll() {
+		return kindMapper.selectAll();
+	}
+
+	public int updateByPrimaryKey(SmallClassify record) {
+//		// 先删除中间表关系
+//		kindMapper.deleteRelation(record.getId());
+
+//		// 重新关联关系
+//		List<Product> prodcuts = record.getProducts();
+		// 判断是否有权限集合
+//		if (prodcuts.size() > 0) {
+//			for (Product p : prodcuts) {
+//				// 处理中间表
+//				kindMapper.insertRelation(record.getId(), p.getId());
+//			}
+//		}
+
+		return kindMapper.updateByPrimaryKey(record);
+	}
+
+	@Override
+	public PageResult queryPage(QueryObject qo) {
+		Long count = kindMapper.queryPageCount(qo);
+		if (count <= 0) {
+			return new PageResult(0L, Collections.EMPTY_LIST);
+		}
+		List<SmallClassify> result = kindMapper.queryPageData(qo);
+		return new PageResult(count, result);
+	}
+
+//	
+//	@Override
+//	public List<Long> getKindIdByProductId(Long employeeId) {
+//		return kindMapper.getSmallClassifyIdByProductId(employeeId);
+//	}
+//
+//	@Override
+//	public List<String> getkindSnByProductId(Long employeeId) {
+//		return kindMapper.getSmallClassifySnByProductId(employeeId);
+//	}
+
+
+}

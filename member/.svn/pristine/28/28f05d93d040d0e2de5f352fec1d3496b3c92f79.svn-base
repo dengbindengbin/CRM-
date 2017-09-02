@@ -1,0 +1,22 @@
+package com._520it.crm.mapper;
+
+import java.util.List;
+
+import com._520it.crm.domain.PurchaseOrder;
+import com._520it.crm.query.QueryObject;
+
+public interface PurchaseOrderMapper {
+	int deleteByPrimaryKey(Long id);
+
+	int insert(PurchaseOrder records);
+
+	PurchaseOrder selectByPrimaryKey(Long id);
+
+	List<PurchaseOrder> selectAll();
+
+	int updateByPrimaryKey(PurchaseOrder record);
+
+	Long queryPageCount(QueryObject qo);
+
+	List<PurchaseOrder> queryPageData(QueryObject qo);
+}

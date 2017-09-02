@@ -1,0 +1,32 @@
+package com._520it.crm.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com._520it.crm.domain.SmallClassify;
+import com._520it.crm.query.QueryObject;
+
+public interface SmallClassifyMapper {
+	int deleteByPrimaryKey(Long id);
+
+	int insert(SmallClassify record);
+
+	SmallClassify selectByPrimaryKey(Long id);
+
+	List<SmallClassify> selectAll();
+
+	int updateByPrimaryKey(SmallClassify record);
+
+	Long queryPageCount(QueryObject qo);
+
+	List<SmallClassify> queryPageData(QueryObject qo);
+
+	void deleteRelation(Long id);
+
+	void insertRelation(@Param("productId")Long productId,@Param("kendId") Long kendId);
+	
+	List<Long> getSmallClassifyIdByProductId(Long employeeId);
+
+	List<String> getSmallClassifySnByProductId(Long employeeId);
+}

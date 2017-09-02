@@ -1,0 +1,75 @@
+package com._520it.crm.web.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com._520it.crm.domain.MemberLevel;
+import com._520it.crm.page.PageResult;
+import com._520it.crm.query.MemberLevelQueryObject;
+import com._520it.crm.service.IMemberLevelService;
+import com._520it.crm.util.AjaxResult;
+
+@Controller
+public class MemberLevelController {
+	@Autowired
+	IMemberLevelService memberLevelService;
+	
+	@RequestMapping("memberLevel")
+	public String index(){
+		return "memberLevel";
+	}
+	@RequestMapping("memberLevel_list")
+	@ResponseBody
+	public PageResult list(MemberLevelQueryObject qo){
+		PageResult pageResult = null;
+		pageResult = memberLevelService.queryPage(qo);
+		return pageResult;
+	}
+	@RequestMapping("memberLevel_save")
+	@ResponseBody
+	public AjaxResult save(MemberLevel memberLevel){
+		AjaxResult result = null;
+		try{
+			memberLevelService.insert(memberLevel);
+			result = new AjaxResult(true,"保存成功");
+		}catch(Exception e){
+			e.printStackTrace();
+			result = new AjaxResult(false,"保存失败,请联系管理员！");
+		}
+		return result;
+	}
+	@RequestMapping("memberLevel_update")
+	@ResponseBody
+	public AjaxResult update(MemberLevel memberLevel){
+		AjaxResult result = null;
+		try{
+			memberLevelService.updateByPrimaryKey(memberLevel);
+			result = new AjaxResult(true,"更新成功");
+		}catch(Exception e){
+			e.printStackTrace();
+			result = new AjaxResult(false,"更新失败,请联系管理员！");
+		}
+		return result;
+	}
+	@RequestMapping("memberLevel_delete")
+	@ResponseBody
+	public AjaxResult delete(Long memberLevelId){
+		AjaxResult result = null;
+		try{
+			memberLevelService.deleteByPrimaryKey(memberLevelId);
+			result = new AjaxResult(true,"删除成功");
+		}catch(Exception e){
+			e.printStackTrace();
+			result = new AjaxResult(false,"删除失败,请联系管理员！");
+		}
+		return result;
+	}
+	@RequestMapping("memberLevelBymember")
+	@ResponseBody
+	public List<MemberLevel> memberLevelBymember(){
+		return  memberLevelService.selectAll();
+	}
+
+}

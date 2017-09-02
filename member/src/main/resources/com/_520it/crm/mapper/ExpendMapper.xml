@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.ExpendMapper" >
+  <resultMap id="BaseResultMap" type="com._520it.crm.domain.Expend" >
+  <id column="id" property="id"/>
+<result property="smallClassify.id" column="smallClassify.id" />
+<result property="debit" column="debit" />
+<result property="spendingtime" column="spendingtime" />
+<result property="spendingonstaff" column="spendingonstaff" />
+<result property="remark" column="remark" />
+<association property="smallClassify" javaType="com._520it.crm.domain.SmallClassify">
+	<result property="id" column="sid" />
+	<result property="name" column="name" />
+	<result property="parentId" column="parent_id" />
+</association>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from expend
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com._520it.crm.domain.Expend" useGeneratedKeys="true" keyProperty="id" >
+    insert into expend ( debit, spendingTime, 
+      spendingOnStaff, smallClassify_id,remark)
+    values (#{debit,jdbcType=DECIMAL}, #{spendingtime,jdbcType=TIMESTAMP}, 
+      #{spendingonstaff,jdbcType=VARCHAR}, #{smallClassify.id,jdbcType=BIGINT},#{remark})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Expend" >
+    update expend
+    set
+      debit = #{debit,jdbcType=DECIMAL},
+      spendingTime = #{spendingtime,jdbcType=TIMESTAMP},
+      spendingOnStaff = #{spendingonstaff,jdbcType=VARCHAR},
+      smallClassify_id = #{smallClassify.id,jdbcType=BIGINT},
+      remark = #{remark}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  select c.id,c.name cname, s.name,s.id sid,s.parent_id,e.id , debit, spendingTime, spendingOnStaff, smallClassify_id,remark
+    from expend e left join smallClassify s on e.smallClassify_id = s.id LEFT JOIN classify c ON
+	c.id = s.parent_id
+    where e.id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap" >
+  select c.id cid,c.name cname, s.name,s.id sid,s.parent_id,e.id , debit, spendingTime, spendingOnStaff, smallClassify_id,remark
+    from expend e left join smallClassify s on e.smallClassify_id = s.id LEFT JOIN classify c ON
+	c.id = s.parent_id
+	<include refid="where_sql"/>
+  </select>
+  
+  <sql id="where_sql">
+  <where>
+  <if test="begin!=null">
+  	and	spendingtime >= #{begin}
+  </if>
+  <if test="end!=null">
+ 	 and spendingtime &lt; #{end}
+  </if>
+  </where>
+  </sql>
+  
+  <select id="count" resultType="long">
+   select count(*)
+   from expend e left join smallClassify s on e.smallClassify_id = s.id LEFT JOIN classify c ON
+	c.id = s.parent_id
+    <include refid="where_sql"/>
+  </select>
+  
+  <select id="queryPageResult" resultMap="BaseResultMap">
+ 	  select c.id cid,c.name cname, s.name,s.id sid,s.parent_id,e.id , debit, spendingTime, spendingOnStaff, smallClassify_id,remark
+    from expend e left join smallClassify s on e.smallClassify_id = s.id LEFT JOIN classify c ON
+	c.id = s.parent_id
+	<include refid="where_sql"/>
+    limit #{start},#{rows}
+  </select>
+  
+</mapper>

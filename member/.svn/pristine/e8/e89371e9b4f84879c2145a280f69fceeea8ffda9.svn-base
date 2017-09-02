@@ -1,0 +1,29 @@
+package com.xmg._520it;
+
+import org.junit.Test;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Formatter;
+
+/**
+ * Created by 1 on 2017/8/27.
+ */
+public class test {
+    @Test
+    public void testDate() throws Exception {
+//        var billNumber=new Date()
+//        var yyyy = billNumber.getFullYear();
+//        var MM = billNumber.getMonth()+1;
+        System.out.println(new Date().toLocaleString());
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern(pattern);
+        String format = sdf.format(new Date());
+        System.out.println(format);
+      /*  SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+        Date parse = sdf1.parse(format);
+        System.out.println(parse);*/
+
+    }
+}

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.DictionaryitemMapper" >
+    <resultMap id="BaseResultMap" type="com._520it.crm.domain.Dictionaryitem" >
+        <id column="id" property="id"  />
+        <result column="sn" property="sn"  />
+        <result column="intro" property="intro"  />
+        <result column="name" property="name"  />
+        <association property="datdict" javaType="com._520it.crm.domain.Dictionary" columnPrefix="d_">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+</resultMap>
+<delete id="deleteByPrimaryKey" parameterType="long" >
+delete from dictionaryitem where id = #{id}
+</delete>
+<insert id="insert" parameterType="com._520it.crm.domain.Dictionaryitem" useGeneratedKeys="true" keyProperty="id" >
+insert into dictionaryitem
+(sn,details_id,intro,name)
+        values
+        (#{sn},#{datdict.id},#{intro},#{name})
+        </insert>
+<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Dictionaryitem" >
+update dictionaryitem
+set
+sn=#{sn},
+details_id=#{datdict.id},
+intro=#{intro},
+name=#{name}
+        where id = #{id}
+        </update>
+<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+select * from dictionaryitem where id = #{id}
+</select>
+<select id="selectAll" resultMap="BaseResultMap" >
+select * from dictionaryitem
+</select>
+<sql id="conditionSql">
+<where>
+    <if test="id !=null">
+        details_id =#{id}
+    </if>
+</where>
+</sql>
+<select id="queryPageCount" resultType="long">
+select count(d.id) from dictionaryitem item JOIN dictionary d
+    ON item.details_id = d.id
+<include refid="conditionSql"/>
+</select>
+<select id="queryPageData" resultMap="BaseResultMap">
+    SELECT item.*,d.id as d_id ,d.name as d_name FROM dictionaryitem item JOIN dictionary d
+    ON item.details_id = d.id
+<include refid="conditionSql"/>
+limit #{start},#{rows}
+</select>
+
+    <!--依据数据字典的id查询出数据字典明细中的内容-->
+    <select id="queryByDictionId" resultMap="BaseResultMap">
+            SELECT item.*,d.id as d_id ,d.name as d_name FROM dictionaryitem item JOIN dictionary d
+    ON item.details_id = d.id WHERE  item.details_id = #{id}
+    </select>
+        </mapper>

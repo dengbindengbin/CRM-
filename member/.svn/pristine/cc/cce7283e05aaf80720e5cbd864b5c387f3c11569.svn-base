@@ -1,0 +1,28 @@
+package com._520it.crm.domain;
+
+
+import genertor.ObjectProp;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * Created by 1 on 2017/8/13.
+ */
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ObjectProp("数据字典明细")
+public class Dictionaryitem {
+    private Long id ;
+    @ObjectProp("数据字典明细编号")
+    private String sn;
+    @ObjectProp("数据字典明细")
+    private String name;
+    @ObjectProp("数据字典明细")
+    private String intro;
+    @ObjectProp("数据字典明细")
+    private Dictionary datdict;
+}

@@ -1,0 +1,30 @@
+package com._520it.crm.domain;
+
+import genertor.ObjectProp;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@ObjectProp("商品类型")
+public class SmallClassify {
+	@ObjectProp("类型ID")
+	private Long id;
+	@ObjectProp("类型名称")
+	private String name;
+
+//	// 商品集合
+//	private List<Product> products;
+
+//	public List<Permission> getPermissions() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
+}

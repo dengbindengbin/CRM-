@@ -1,0 +1,25 @@
+package com._520it.crm.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import com._520it.crm.domain.Stockoutcomebillitem;
+import com._520it.crm.query.BillSearchQuery;
+import com._520it.crm.query.QueryObject;
+import com._520it.crm.query.SearchQuery;
+
+public interface StockoutcomebillitemMapper {
+    int deleteByPrimaryKey(Long id);
+    int insert(Stockoutcomebillitem record);
+    Stockoutcomebillitem selectByPrimaryKey(Long id);
+    List<Stockoutcomebillitem> selectAll();
+    int updateByPrimaryKey(Stockoutcomebillitem record);
+	Long queryPageCount(QueryObject qo);
+	List<Stockoutcomebillitem> queryPageData(SearchQuery qo);
+	List<Map<String,Object>> getMemberResport(SearchQuery qo);
+	List<Map<String,Object>> getClient(SearchQuery qo);
+	List<Map<String,Object>> getProductSale(SearchQuery qo);
+	List<Map<String,Object>> getPayMoney(BillSearchQuery qo);
+	List<Map<String,Object>> getPayMoneyOfClient(BillSearchQuery qo);
+	List<Map<String,Object>> getPayMoneyOfMember(BillSearchQuery qo);
+}

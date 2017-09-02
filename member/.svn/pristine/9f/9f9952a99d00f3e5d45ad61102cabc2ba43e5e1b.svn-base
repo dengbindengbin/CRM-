@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.StockoutcomebillitemMapper">
+	<resultMap id="BaseResultMap" type="com._520it.crm.domain.Stockoutcomebillitem">
+		<id column="id" property="id" />
+		<result column="saleamount" property="saleamount" />
+		<result column="saleprice" property="saleprice" />
+		<result column="intputtime" property="intputtime" />
+		<result column="odd_numbers" property="oddNumbers" />
+		<result column="paytype" property="paytype" />
+		<result column="serial_number" property="serialNumber" />
+		<result column="number" property="number" />
+		<result column="discount" property="discount" />
+		<association property="client" javaType="com._520it.crm.domain.Client"
+			columnPrefix="c_">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<association property="member" javaType="com._520it.crm.domain.Member"
+				columnPrefix="m_">
+				<result property="id" column="id" />
+				<result property="name" column="name" />
+				<result property="payment" column="payment" />
+				<result property="totalMoney" column="totalMoney" />
+				<result property="totalConsume" column="totalConsume" />
+			</association>
+		</association>
+		<association property="product" javaType="com._520it.crm.domain.Product"
+			columnPrefix="p_">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="sn" column="sn" />
+			<result property="price" column="price" />
+			<result property="costPrice" column="costPrice" />
+			<result property="lowPrice" column="lowPrice" />
+			<result property="lowDiscount" column="lowDiscount" />
+			<result property="stock" column="stock" />
+			<result property="units" column="units" />
+			<result property="overdue" column="overdue" />
+			<result property="remark" column="remark" />
+			<result property="weight" column="weight" />
+			<result property="integral" column="integral" />
+			<association property="kind"
+				javaType="com._520it.crm.domain.ProductClassify">
+				<result property="id" column="id" />
+				<result property="type_name" column="name" />
+			</association>
+		</association>
+		<association property="store" javaType="com._520it.crm.domain.Store"
+			columnPrefix="s_">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+		</association>
+		<association property="parent" javaType="com._520it.crm.domain.Store"
+			columnPrefix="ps_">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+		</association>
+	</resultMap>
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		delete from
+		stockoutcomebillitem where id = #{id}
+	</delete>
+	<insert id="insert" parameterType="com._520it.crm.domain.Stockoutcomebillitem"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into stockoutcomebillitem
+		(product_id,saleamount,saleprice,client_id,store_id,intputtime,odd_numbers,paytype,parent_id,serial_number,number,discount)
+		values
+		(#{product.id},#{saleamount},#{saleprice},#{client.id},#{store.id},#{intputtime},#{oddNumbers},#{paytype},#{parent.id},#{serialNumber},#{number},#{discount})
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Stockoutcomebillitem">
+		update
+		stockoutcomebillitem
+		set
+		product_id=#{product.id},
+		saleamount=#{saleamount},
+		saleprice=#{saleprice},
+		client_id=#{client.id},
+		store_id=#{store.id},
+		intputtime=#{intputtime},
+		odd_numbers=#{oddNumbers},
+		paytype=#{paytype},
+		parent_id=#{parent.id},
+		serial_number=#{serialNumber},
+		number=#{number},
+		discount=#{discount}
+		where id = #{id}
+	</update>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="base_column" />
+		from
+		<include refid="base_table" />
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap">
+		select id, productName,
+		odd_numbers, serial_number, client_id, saleprice,
+		discount,
+		saleamount,
+		number, paytype, store_id, parent, zintputtime
+		from
+		stockoutcomebillitem bill join
+	</select>
+	<sql id="base_where">
+		<where>
+			<if test="value!=null and name=='client_id'">
+				and client_id like concat("%",#{value},"%")
+			</if>
+			<if test="value!=null and name=='serial_number'">
+				and serial_number like concat("%",#{value},"%")
+			</if>
+			<if test="value!=null and name=='productName'">
+				and p.name like concat("%",#{value},"%")
+			</if>
+			<if test="startTime!=null">
+				and intputtime &gt;=#{startTime}
+			</if>
+			<if test="endTime!=null">
+				and intputtime &lt;=#{endTime}
+			</if>
+			<if test="paytype!=null">
+				and bill.paytype =#{paytype}
+			</if>
+		</where>
+	</sql>
+	<!--               -->
+	<sql id="base_where2">
+		<where>
+			<if test="value!=null and name=='client_id'">
+				and client_id like concat("%",#{value},"%")
+			</if>
+			<if test="value!=null and name=='serial_number'">
+				and serial_number like concat("%",#{value},"%")
+			</if>
+			<if test="value!=null and name=='productName'">
+				and p.name like concat("%",#{value},"%")
+			</if>
+			<if test="startTime!=null">
+				and intputtime &gt;=#{startTime}
+			</if>
+			<if test="endTime!=null">
+				and intputtime &lt;=#{endTime}
+			</if>
+			<if test="paytype!=null">
+				and bill.paytype =#{paytype}
+			</if>
+		</where>
+	</sql>
+	<!-- 这是每日对账单用的 -->
+	<sql id="base_where3">
+		<where>
+			<if test="startTime!=null">
+				and ment.paymentTime &gt;=#{startTime}
+			</if>
+			<if test="endTime!=null">
+				and ment.paymentTime &lt;=#{endTime}
+			</if>
+		</where>
+	</sql>
+	<sql id="base_where4">
+		<where>
+			<if test="startTime!=null">
+				and bill.intputtime &gt;=#{startTime}
+			</if>
+			<if test="endTime!=null">
+				and bill.intputtime &lt;=#{endTime}
+			</if>
+			<if test="true==true">
+				and c.member_id is not null
+			</if>
+		</where>
+	</sql>
+	<sql id="base_where5">
+		<where>
+			<if test="startTime!=null">
+				and bill.intputtime &gt;=#{startTime}
+			</if>
+			<if test="endTime!=null">
+				and bill.intputtime &lt;=#{endTime}
+			</if>
+			<if test="true==true">
+				and c.member_id is  null
+			</if>
+		</where>
+	</sql>
+	<select id="getPayMoneyOfMember" resultType="hashmap">
+		select
+		bill.id,sum(bill.saleamount) clienttotal,bill.paytype,count(c.name) cnum,c.id
+		from
+		stockoutcomebillitem bill join client c on bill.client_id=c.id
+		<include refid="base_where4" />
+		GROUP BY bill.paytype
+	</select>
+	<select id="getPayMoneyOfClient" resultType="hashmap">
+		select
+		bill.id,sum(bill.saleamount)
+		clienttotal,bill.paytype,c.name,c.id,count(c.id) cnum
+		from
+		stockoutcomebillitem bill join client c on bill.client_id=c.id
+		<include refid="base_where5"/>
+		GROUP BY bill.paytype
+	</select>
+	<select id="getPayMoney" resultType="hashmap">
+		select sum(ment.payMoney) paytotal,ment.payment mentpay
+		from
+		memberpayment ment join member m on ment.member_id=m.id
+		<include refid="base_where3" />
+		GROUP BY ment.payment
+	</select>
+	<sql id="base_column">
+		p.id p_id,p.name p_name,bill.id, bill.odd_numbers,
+		bill.serial_number,
+		bill.saleprice, bill.discount,
+		bill.saleamount,bill.number,bill.paytype,s.id s_id,s.name
+		s_name,bill.intputtime,
+		c.id c_id,c.name c_name,ps.id ps_id,ps.name
+		ps_name
+
+	</sql>
+	<sql id="base_table">
+		stockoutcomebillitem bill left join product p on
+		bill.product_id=p.id
+		left join client c on
+		bill.client_id=c.id
+		left join
+		member m on m.id=c.member_id
+		left join
+		memberlevel level on
+		level.id=m.level_id
+		left join store s on
+		s.id=bill.store_id
+		left join
+		store ps on s.parent_id=ps.id
+
+	</sql>
+	<select id="queryPageData" resultMap="BaseResultMap">
+		select
+		<include refid="base_column" />
+		from
+		<include refid="base_table" />
+		<include refid="base_where2" />
+		limit #{start},#{rows}
+	</select>
+	<select id="queryPageCount" resultType="long">
+		select count(bill.id)
+		from
+		<include refid="base_table" />
+		<include refid="base_where2" />
+	</select>
+	<select id="getMemberResport" resultType="hashmap">
+		SELECT m.id mid,m.name
+		mname,m.sn msn,bill.saleamount
+		billamount,bill.id,c.id
+		cid,s.id sid,s.name sname,ps.id
+		psid,ps.name
+		psname,
+		p.id pid,p.price
+		pprice,p.costPrice pcostPrice,count(p.id) as
+		bbb,bill.intputtime intputtime,
+		(p.price*bill.discount-p.costPrice)*bill.number
+		maolili,((p.price*bill.discount-p.costPrice)*bill.number)/p.costPrice
+		huia
+		from member m join
+		client c on c.member_id=m.id
+		join
+		stockoutcomebillitem bill on
+		bill.client_id=c.id
+		join product p on
+		bill.product_id=p.id
+		join store s
+		on bill.store_id=s.id
+		join store ps on
+		s.parent_id=ps.id
+		<include refid="base_where" />
+		GROUP BY m.id
+	</select>
+	<select id="getClient" resultType="hashmap">
+		SELECT
+		s.id sid,s.saleamount,count(s.id) ppp,s.intputtime,
+		(p.price*s.discount-p.costPrice)*s.number
+		maoli,((p.price*s.discount-p.costPrice)*s.number)/p.costPrice aaa
+		from
+		stockoutcomebillitem s join client c on s.client_id=c.id
+		join product p
+		on p.id=s.product_id
+		<include refid="base_where" />
+		and c.member_id is null
+		group by p.id
+
+	</select>
+	<!-- 查询产品分析 -->
+	<select id="getProductSale" resultType="hashmap">
+		select
+		p.id pid,p.name pname,p.sn psn,bill.id billid,bill.saleamount
+		billamount,bill.number billnum,
+		(p.price*bill.discount-p.costPrice)*bill.number maoli,sum(bill.number)
+		totalnumber,sum(bill.saleamount) totalamount,
+		((p.price*bill.discount-p.costPrice)*bill.number)/p.costPrice
+		lilv,count(p.id) totalid
+		from stockoutcomebillitem bill join product p
+		on bill.product_id=p.id
+		<include refid="base_where" />
+		group by p.id
+	</select>
+<!-- 	<select id="getMemberResport"  resultType="hashmap">
+		SELECT m.id m_id,m.name
+		m_name,m.sn m_sn,bill.saleamount,bill.id,c.id c_id,s.id s_id,s.name s_name,ps.id
+		ps_id,ps.name ps_name,
+		p.id p_id,p.price p_price,p.costPrice p_costPrice,count(p.id) as ppp
+		from member m join client c on c.member_id=m.id
+		join stockoutcomebillitem bill on bill.client_id=c.id
+		join product p on bill.product_id=p.id
+		join store s on bill.store_id=s.id
+		join store ps on s.parent_id=ps.id
+		GROUP BY m.id;
+
+	</select> -->
+</mapper>

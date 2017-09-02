@@ -1,0 +1,118 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>dictionary管理</title>
+    <%@include file="/static/common/common.jsp"%>
+<script type="text/javascript" src="/static/js/dictionary.js"></script>
+</head>
+<body>
+<div id="cc" class="easyui-layout" style="width:600px;height:400px;" fit="true">
+	<div data-options="region:'west',title:'字典目录',split:true" style="width:700px;">
+	<!-- 数据表格 -->
+	<table id="dictionary_datagrid">
+		<thead>
+			<tr>
+				<th data-options="field:'sn',align:'center',width:10">字典目录编号</th>
+				<th data-options="field:'name',align:'center',width:10">字典目录名称</th>
+				<th data-options="field:'intro',align:'center',width:10">字典目录简介</th>
+			</tr>
+		</thead>
+	</table>
+	<!-- 新增编辑对话框 -->
+	<div id="dictionary_dialog">
+		<form id="dictionary_form" method="post">
+		<table align="center" style="margin-top: 15px;">
+			<input type="hidden" name="id">
+			<tr>
+				<td>字典目录编号</td>
+				<td><input type="text" name="sn"></td>
+			</tr>
+			<tr>
+				<td>字典目录名称</td>
+				<td><input type="text" name="name"></td>
+			</tr>
+			<tr>
+				<td>字典目录简介</td>
+				<td><input type="text" name="intro"></td>
+			</tr>
+		</table>
+		</form>
+	</div>
+	<!-- 数据表格CRUD按钮 -->
+	<div id="dictionary_datagrid_tb">
+        <div>
+            <a class="easyui-linkbutton" iconCls="icon-add" plain="true" data-cmd="add">新增</a>
+            <a class="easyui-linkbutton" iconCls="icon-edit" plain="true" data-cmd="edit">編輯</a>
+            <a class="easyui-linkbutton" iconCls="icon-remove" plain="true" data-cmd="del">刪除</a>
+            <a class="easyui-linkbutton" iconCls="icon-reload" plain="true" data-cmd="reload">刷新</a>
+        </div>
+    </div>
+    <!-- 对话框保存取消按钮 -->
+    <div id="dictionary_dialog_bt">
+        <a class="easyui-linkbutton" iconCls="icon-save" plain="true" data-cmd="save">保存</a>
+        <a class="easyui-linkbutton" iconCls="icon-cancel" plain="true" data-cmd="cancel">取消</a>
+    </div>
+	</div>
+
+    <!-- ==========================数据字典明细crud===========================================-->
+	<div data-options="region:'center',title:'字典目录明细'" style="padding:3px;background:#eee;">
+    <table id="dictionaryItem_datagrid">
+        <thead>
+        <tr>
+            <th data-options="field:'sn',align:'center',width:10">字典编号</th>
+            <th data-options="field:'name',align:'center',width:10">字典名称</th>
+            <th data-options="field:'intro',align:'center',width:10">字典简介</th>
+            <th data-options="field:'dictionary',align:'center',width:10 ,formatter:dictoryName">字典目录</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div id="dictionaryItem_dialog">
+        <form id="dictionaryitem_form" method="post">
+            <table align="center" style="margin-top: 15px;">
+                <input type="hidden" name="id">
+                <tr>
+                    <td>字典编号</td>
+                    <td><input type="text" name="sn"></td>
+                </tr>
+                <tr>
+                    <td>字典名称</td>
+                    <td><input type="text" name="name"></td>
+                </tr>
+                <tr>
+                    <td>字典简介</td>
+                    <td><input type="text" name="intro"></td>
+                </tr>
+                <tr>
+                    <td>字典父目录</td>
+                    <td>
+                        <input class="easyui-combobox"
+                               data-options="valueField:'id',textField:'name',url:'/dictionary/list' "
+                               name="dictionary.id"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div id="dictionaryItem_datagrid_tb">
+        <div>
+            <a class="easyui-linkbutton" iconCls="icon-add" plain="true" data-cmd="addItem">新增</a>
+            <a class="easyui-linkbutton" iconCls="icon-edit" plain="true" data-cmd="editItem">編輯</a>
+            <a class="easyui-linkbutton" iconCls="icon-remove" plain="true" data-cmd="delItem">刪除</a>
+            <a class="easyui-linkbutton" iconCls="icon-reload" plain="true" data-cmd="reloadItem">刷新</a>
+        </div>
+    </div>
+    <!-- 对话框保存取消按钮 -->
+    <div id="dictionaryitem_dialog_bt">
+        <a class="easyui-linkbutton" iconCls="icon-save" plain="true" data-cmd="saveitem">保存</a>
+        <a class="easyui-linkbutton" iconCls="icon-cancel" plain="true" data-cmd="cancelitem">取消</a>
+    </div>
+    <!-- ==========================数据字典明细crud===========================================-->
+	</div>
+</div>
+</body>
+</html>

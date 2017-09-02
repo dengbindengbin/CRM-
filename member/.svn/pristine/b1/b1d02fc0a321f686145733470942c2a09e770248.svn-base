@@ -1,0 +1,61 @@
+package com._520it.crm.service.impl;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com._520it.crm.domain.SmallClassify;
+import com._520it.crm.mapper.SmallClassifyMapper;
+import com._520it.crm.page.PageResult;
+import com._520it.crm.query.QueryObject;
+import com._520it.crm.service.ISmallClassifyService;
+
+@Service
+public class SmallClassisyServiceImpl implements ISmallClassifyService {
+	@Autowired
+	private SmallClassifyMapper mapper;
+
+	@Override
+	public int deleteByPrimaryKey(Long id) {
+		return mapper.deleteByPrimaryKey(id);
+	}
+
+	@Override
+	public int insert(SmallClassify record) {
+		int count = mapper.insert(record);
+		return count;
+	}
+
+	@Override
+	public SmallClassify selectByPrimaryKey(Long id) {
+		return mapper.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public List<SmallClassify> selectAll() {
+		return mapper.selectAll();
+	}
+
+	@Override
+	public int updateByPrimaryKey(SmallClassify record) {
+		return mapper.updateByPrimaryKey(record);
+	}
+
+	@Override
+	public List<SmallClassify> selectByClassify(Long parentId) {
+		return mapper.selectByClassify(parentId);
+	}
+
+	@Override
+	public PageResult queryPage(QueryObject qo) {
+		Long count = mapper.queryPageCount(qo);
+		if (count <= 0) {
+			return new PageResult(0L, Collections.EMPTY_LIST);
+		}
+		List<SmallClassify> result = mapper.queryPageData(qo);
+		return new PageResult(count, result);
+	}
+
+}

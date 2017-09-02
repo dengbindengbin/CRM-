@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.MemberPaymentMapper" >
+    <resultMap id="BaseResultMap" type="com._520it.crm.domain.MemberPayment" >
+        <id column="id" property="id"  />
+        <result column="payMoney" property="payMoney"  />
+        <result column="payment" property="payment"  />
+        <result column="remark" property="remark"  />
+        <result column="paymentTime" property="paymentTime"  />
+        <result column="giveMoney" property="giveMoney"  />
+        <result column="totalMoney" property="totalMoney"  />
+        <result column="sn" property="sn"  />
+        <association property="member" column="member_id" select="com._520it.crm.mapper.MemberMapper.selectByPrimaryKey"/>
+</resultMap>
+<delete id="deleteByPrimaryKey" parameterType="long" >
+delete from memberPayment where id = #{id}
+</delete>
+<insert id="insert" parameterType="com._520it.crm.domain.MemberPayment" useGeneratedKeys="true" keyProperty="id" >
+insert into memberPayment
+(member_id,payMoney,payment,remark,paymentTime,giveMoney,totalMoney,sn)
+        values
+        (#{member.id},#{payMoney},#{payment},#{remark},#{paymentTime},#{giveMoney},#{totalMoney},#{sn})
+        </insert>
+<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.MemberPayment" >
+update memberPayment
+set
+member_id=#{member.id},
+payMoney=#{payMoney},
+payment=#{payment},
+remark=#{remark},
+paymentTime=#{paymentTime},
+giveMoney=#{giveMoney},
+totalMoney=#{totalMoney}
+sn=#{sn}
+        where id = #{id}
+        </update>
+<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+select * from memberPayment where id = #{id}
+</select>
+<select id="selectAll" resultMap="BaseResultMap" >
+select * from memberPayment WHERE sn =#{sn}
+</select>
+      <sql id="conditionSql">
+     <where>
+         <if test="memberId!=null">
+             member_id = #{memberId}
+         </if>
+    </where>
+     </sql>
+    <select id="queryPageCount" resultType="long">
+    select count(0) from memberPayment
+    <include refid="conditionSql"/>
+    </select>
+    <select id="queryPageData" resultMap="BaseResultMap">
+    select * from memberPayment
+    <include refid="conditionSql"/>
+     limit #{start},#{rows}
+    </select>
+        </mapper>

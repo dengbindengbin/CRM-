@@ -1,0 +1,196 @@
+$(function(){
+	//测试
+	$("#count").numberbox({
+		min:0,
+		precision:2,
+		value:0
+	});
+	$("#dis").numberbox({
+		min:0.3,
+		max:1,
+		precision:2,
+		value:1,
+		onChange:function(newValue,oldValue){
+			//获取总合计
+			var nowTotal = $("#count").numberbox("getValue");
+			var numNowTotal = new Number(nowTotal);
+			//获取折扣
+			 var dis = $("#dis").numberbox("getValue");
+			 var numDis = new Number(dis);
+			 //计算折扣后的应收款
+			  var disNumNowTotal = numDis * numNowTotal;
+			  $("#real").numberbox("setValue",disNumNowTotal);
+		}
+	});
+	$("#real").numberbox({
+		min:0,
+		precision:2,
+		value:0
+	});
+	
+	
+	//设置系统当前时间
+	setInterval(function(){
+	var date = new Date();
+	var year = date.getFullYear();
+	var month = date.getMonth();
+	var day = date.getDate();
+	var hour = date.getHours();
+	var minute=date.getMinutes();
+	var second = date.getSeconds();
+	var h  =document.getElementById("hour");
+	var m = document.getElementById("minute");
+	var s = document.getElementById("second");
+	var y = document.getElementById("year");
+	var mon = document.getElementById("month");
+	var d = document.getElementById("day");
+	var y1 = document.getElementById("year1");
+	var mon1 = document.getElementById("month1");
+	var d1 = document.getElementById("day1");
+	console.log(year,month,day);
+	y.innerHTML=year;
+	mon.innerHTML=month+1;
+	y1.innerHTML=year;
+	mon1.innerHTML=month+1;
+	h.innerHTML=hour;
+	m.innerHTML=minute;
+	s.innerHTML=second;
+	d.innerHTML=day;
+	d1.innerHTML=day;
+	
+	},1000);
+	
+
+	$("#panelProduct").panel({
+		width:333,    
+		height:260,
+		border:true,
+	});
+	
+	
+	$("#product_datagrid").datagrid({
+		url:"/employee_list",
+		  columns:[[    
+		            {field:'username',title:'商品名称',width:90},    
+		            {field:'realname',title:'单价',width:90},    
+		            {field:'tel',title:'数量',width:90,align:'right'}    
+		        ]]    
+	});
+	
+	
+	
+	
+	
+})
+
+
+//定义将商品信息添加到购物车中的方法
+function addToCar(obj){
+	 obj.style.background = "none";
+	 var ul = $("#productUl");
+	 var arrayLi =  ul.children("li");
+	 for ( var index = 0; index < arrayLi.length; index++) {
+		 
+		var objName = $(obj).data("name");
+		var liName = $(arrayLi[index]).find("[name='productName']").html();
+		if (objName == liName) {//如果存在,则选中
+			change(arrayLi[index]);
+			/*var value = $(arrayLi[index]).find("[name='productNums']").val();
+			$(arrayLi[index]).find("[name='productNums']").val(100);
+			value = $(arrayLi[index]).find("[name='productNums']").val();
+			console.log(value);
+			var inputObj = arrayLi[index]
+			console.log("--------inputObj-------------")
+			console.log( inputObj);
+			console.log("--------inputObj-------------")*/
+			//inputObj.numberspinner("setValue",value+1);
+			
+			return;
+		}
+	}
+	 //添加一个新的商品
+	 var newLi = $("#copyLi").clone(true);
+		newLi.attr("class","liClassShow")
+		newLi.find("[name='productName']").html($(obj).data("name"))
+		newLi.find("[name='productSn']").html($(obj).data("sn"))
+		newLi.find("[name='proPrice']").html($(obj).data("price"))
+		newLi.find("[name='totalPrice']").html($(obj).data("price"))
+		//为input标签渲染easyui-numberspinner组件
+		newLi.find("[name='productNums']").numberspinner({
+			value:1,
+			min:1,
+			editable:true,
+			//绑定值改变事件,当数量变化时,改变总价
+			onChange:function(newValue,oldValue){
+				var parentli = $(this).closest("li");
+				var price = parentli.find("[name='proPrice']").html();
+				var number = $(this).val();
+				var totalPrice =price * number;
+				parentli.find("[name=totalPrice]").html(totalPrice);
+				count();
+			}
+		})
+		newLi.appendTo(ul);
+		count();
+	
+	
+	
+}
+
+
+
+
+//点击购物车的商品时,显示选中状态
+function change(obj){
+	var arr = $("[class=liClassShow]")
+    for (var i = 0; i < arr.length; i++) {
+        var a = arr[i];
+        a.style.background = "none";
+    };
+    obj.style.background = "grey";
+}
+
+function changeBack(obj){
+
+    obj.style.background = "grey";
+}
+
+
+//合计购物车所有的商品总价
+function count(){
+	
+	$("#count").numberbox("setValue",0.00);
+	var nowTotal = $("#count").numberbox("getValue");
+	var numNowTotal = new Number(nowTotal);
+	 var ul = $("#productUl");
+	 var arrayLi =  ul.children("li");
+	 for ( var index = 0; index < arrayLi.length; index++) {
+		var eachTotal = $(arrayLi[index]).find("[name='totalPrice']").html();
+		var numEachTotal = new Number(eachTotal);
+		numNowTotal = numNowTotal + numEachTotal;
+	}
+	 $("#count").numberbox("setValue",numNowTotal);
+	 //获取折扣
+	 var dis = $("#dis").numberbox("getValue");
+	 var numDis = new Number(dis);
+	 //计算折扣后的应收款
+	  var disNumNowTotal = numDis * numNowTotal;
+	  $("#real").numberbox("setValue",disNumNowTotal);
+}
+
+//删除购物车中的当前商品
+function removeProduct(){
+	 var ul = $("#productUl");
+	 var arrayLi =  ul.children("li");
+	 for ( var index = 0; index < arrayLi.length; index++) {
+		 console.debug(arrayLi[index].style.background);
+			if (arrayLi[index].style.background == "grey none repeat scroll 0% 0%") {
+				$(arrayLi[index]).remove();
+				count();
+				return ;
+			}
+		}
+}
+
+
+

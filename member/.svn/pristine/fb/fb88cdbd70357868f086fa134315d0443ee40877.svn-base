@@ -1,0 +1,70 @@
+package com._520it.crm.service.impl;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com._520it.crm.domain.Client;
+import com._520it.crm.domain.Product;
+import com._520it.crm.mapper.ClientMapper;
+import com._520it.crm.page.PageResult;
+import com._520it.crm.query.QueryObject;
+import com._520it.crm.service.IClientService;
+@Service
+public class ClientServiceImpl implements IClientService {
+	@Autowired
+	private ClientMapper clientMapper;
+	
+	public int deleteByPrimaryKey(Long id) {
+		 clientMapper.deleteByPrimaryKey(id);
+		 clientMapper.deleteRelation(id);
+		return 0;
+	}
+
+	public int insert(Client record) {
+		int insert = clientMapper.insert(record);
+		List<Product> products = record.getProducts();
+		for (Product product : products) {
+			clientMapper.insertRelation(record.getId(), product.getId());
+		}
+		return 0;
+	}
+
+	public Client selectByPrimaryKey(Long id) {
+		return clientMapper.selectByPrimaryKey(id);
+	}
+
+	public List<Client> selectAll() {
+		return clientMapper.selectAll();
+	}
+
+	public int updateByPrimaryKey(Client record) {
+		 clientMapper.deleteRelation(record.getId());
+		 int updateByPrimaryKey = clientMapper.updateByPrimaryKey(record);
+		 List<Product> products = record.getProducts();
+			for (Product product : products) {
+				clientMapper.insertRelation(record.getId(), product.getId());
+			}
+		return 0;
+	}
+
+	@Override
+	public PageResult queryPage(QueryObject qo) {
+		Long count = clientMapper.queryPageCount(qo);
+		if(count<=0){
+			return new PageResult(0L, Collections.EMPTY_LIST);
+		}
+		List<Client> result = clientMapper.queryPageData(qo);
+		PageResult pageResult = new PageResult(count,result);
+		return pageResult;
+	}
+
+	@Override
+	public List<Client> selectToall() {
+		List<Client> selectToall = clientMapper.selectToall();
+		return selectToall;
+	}
+}

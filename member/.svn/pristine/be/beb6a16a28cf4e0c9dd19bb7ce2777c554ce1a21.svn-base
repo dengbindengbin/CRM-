@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.WarehouseMapper">
+	<resultMap id="BaseResultMap" type="com._520it.crm.domain.Warehouse">
+		<id column="id" property="id" />
+		<result column="sn" property="sn" />
+		<result column="address" property="address" />
+		<result column="remark" property="remark" />
+		<result column="wname" property="wname" />
+		<result column="name" property="name" />
+		<result column="phone" property="phone" />
+		<result column="state" property="state" />
+		<result column="number" property="number" />
+		<result column="addDate" property="addDate" />
+	</resultMap>
+	
+	<resultMap type="com._520it.crm.domain.Product" id="ProductBaseResultMap">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="sn" column="sn" />
+		<result property="price" column="price" />
+		<result property="stock" column="stock" />
+		<result property="units" column="units" />
+		<result property="costPrice" column="costPrice" />
+
+		<association property="kind" javaType="com._520it.crm.domain.ProductClassify" columnPrefix="pc_">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+		</association>
+
+	</resultMap>
+	
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		delete from
+		warehouse where id = #{id}
+	</delete>
+	<insert id="insert" parameterType="com._520it.crm.domain.Warehouse"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into warehouse
+		(sn,address,remark,wname,name,phone,state,addDate,number)
+		values
+		(#{sn},#{address},#{remark},#{wname},#{name},#{phone},#{state},#{addDate},#{number})
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Warehouse">
+		update warehouse
+		set
+		sn=#{sn},
+		address=#{address},
+		remark=#{remark},
+		wname=#{wname},
+		name=#{name},
+		phone=#{phone},
+		addDate=#{addDate},
+
+		where id = #{id}
+	</update>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="long">
+		select * from warehouse where id = #{id}
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap">
+		select * from warehouse
+	</select>
+
+	 <sql id="where_sql">
+		<where>
+			<!-- <if test="keyword!==null and keyword!==''">
+				and (sn like concat("%",#{sn},"%")
+					or name like concat("%",#{name},"%")
+				)
+			</if> -->
+		</where>
+	</sql>
+	<select id="queryPageCount" resultType="long">
+		select count(*) from warehouse
+		<include refid="where_sql" />
+	</select>
+	<select id="queryPageData" resultMap="BaseResultMap">
+		select * from warehouse
+		<include refid="where_sql" />
+		limit #{start},#{rows}
+	</select>
+
+	<!-- 判断是否启用仓库 -->
+	<update id="changeState">
+		update warehouse
+		<set>
+			<choose>
+				<when test="state==false">
+					state=1
+				</when>
+				<otherwise>
+					state=0
+				</otherwise>
+			</choose>
+		</set>
+		where id = #{id}
+	</update>
+
+	<!-- 根据仓库，查询商品信息 -->
+	<select id="selectByWarehouseId" resultMap="ProductBaseResultMap">
+		select
+		p.id,p.sn,p.`name`,p.costPrice,p.stock,p.units,p.price,pc.name pc_name,pc.id pc_id
+		from warehouse w
+		LEFT JOIN warehouse_product wp ON (w.id=wp.warehouse_id)
+		LEFT JOIN product p ON (p.id=wp.product_id)
+		left join productclass pc on(p.kind_id=pc.id)
+		WHERE w.id=#{w.id}
+	</select>
+
+</mapper>

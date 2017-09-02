@@ -1,0 +1,280 @@
+package com._520it.crm.web.controller;
+
+
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import jxl.Workbook;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com._520it.crm.domain.Employee;
+import com._520it.crm.domain.Expend;
+import com._520it.crm.domain.SmallClassify;
+import com._520it.crm.page.PageResult;
+import com._520it.crm.query.ExpendQuery;
+import com._520it.crm.service.IExpendService;
+import com._520it.crm.service.ISmallClassifyService;
+import com._520it.crm.util.AjaxResult;
+import com._520it.crm.util.PermissionName;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+
+
+@Controller
+public class ExpendController extends BaseController{
+
+	@Autowired
+	private IExpendService service;
+	@Autowired
+	private ISmallClassifyService smallService;
+
+	@RequestMapping("/expend")
+	@RequiresPermissions("expend:view")
+	@PermissionName("支出主页")
+	public String index(ExpendQuery qo,HttpServletRequest request){
+		PageResult pageResult = service.queryPageResult(qo);
+		List<Expend> avg = (List<Expend>)pageResult.getRows();
+		BigDecimal debit = BigDecimal.ZERO;
+		for (Expend expend : avg) {
+			debit = debit.add(expend.getDebit());
+		}
+		System.out.println(debit.toString());
+		String debits = debit.toString();
+		request.setAttribute("debit", debits);
+		return "expend";
+	}
+
+	@RequestMapping("/expend_list")
+	@ResponseBody
+	@RequiresPermissions("expend:list")
+	@PermissionName("支出列表")
+	public PageResult list(ExpendQuery qo){
+		PageResult pageResult = service.queryPageResult(qo);
+		return pageResult;
+	}
+	
+	@RequestMapping("/expend_export")
+	@ResponseBody
+	public void export(HttpServletResponse response,ExpendQuery qo) throws Exception {
+		//文件下载响应头
+		response.setHeader("Content-Disposition", "attachment;filename=a.xls");
+		//响应到浏览器
+		WritableWorkbook workbook = Workbook.createWorkbook(response.getOutputStream());
+
+		//创建本地xls文件
+		//WritableWorkbook workbook = Workbook.createWorkbook(new File("F:/a.xls"));
+		//创建工作簿sheet
+		WritableSheet sheet = workbook.createSheet("day01", 0);
+
+
+		//设置列标题
+		sheet.addCell(new Label(0,0,"支出分类"));
+		sheet.addCell(new Label(1,0,"支出金额"));
+		sheet.addCell(new Label(2,0,"支出时间"));
+		sheet.addCell(new Label(3,0,"支出人员"));
+		sheet.addCell(new Label(4,0,"备注"));
+
+
+		//把员工的数据填充到工作簿中
+		List<Expend> list = service.selectAll(qo);
+
+		for (int i = 0,j = 1; i < list.size(); i++,j++) {
+			Expend expend = list.get(i);
+			sheet.addCell(new Label(0,j,expend.getSmallClassify().getName()));
+			sheet.addCell(new Label(1,j,expend.getDebit().toString()));
+			sheet.addCell(new Label(2,j,expend.getSpendingtime().toLocaleString()));
+			sheet.addCell(new Label(3,j,expend.getSpendingonstaff()));
+			sheet.addCell(new Label(4,j,expend.getRemark()));
+		}
+
+		//写入数据
+		workbook.write();
+		//关闭资源
+		workbook.close();
+	}
+	
+	@RequestMapping("/expend_delete")
+	@ResponseBody
+	@RequiresPermissions("expend:view")
+	@PermissionName("删除数据")
+	public AjaxResult delete(Long id){
+		try {
+			service.deleteByPrimaryKey(id);
+			return new AjaxResult(true,"删除成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return  new AjaxResult(true,"删除成功");
+		}
+	}
+	@RequestMapping("/expend_save")
+	@ResponseBody
+	@RequiresPermissions("expend:save")
+	@PermissionName("新增支出")
+	public AjaxResult save(Expend exp){
+		//默认是在职状态
+		try{
+			service.insert(exp);
+			return new AjaxResult(true,"保存成功!");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return new AjaxResult(false,"保存失败!");
+	}
+	
+	
+	@RequestMapping("/expend_update")
+	@ResponseBody
+	public AjaxResult update(Expend ex){
+		try{
+			service.updateByPrimaryKey(ex);
+			return new AjaxResult(true,"更新成功!");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return new AjaxResult(false,"更新失败!");
+	}
+
+	@RequestMapping("/select_getSmallName")
+	@ResponseBody
+	public List<SmallClassify> list(Long smallId){
+		List<SmallClassify> list = new ArrayList<>();
+		SmallClassify smallClassify = smallService.selectByPrimaryKey(smallId);
+		list.add(smallClassify);
+		return list;
+	}
+	
+	@RequestMapping("/analyze")
+	@RequiresPermissions("analyze:view")
+	@PermissionName("支出分析主页")
+	public String analyze(ExpendQuery qo ,HttpServletRequest request){
+		List<Expend> expend = service.selectAll(qo);
+		Date date = new Date();
+		List<BigDecimal> list = new ArrayList<>();
+		BigDecimal one = new BigDecimal(0);
+		BigDecimal two = new BigDecimal(0);
+		BigDecimal three = new BigDecimal(0);
+		BigDecimal four = new BigDecimal(0);
+		BigDecimal five = new BigDecimal(0);
+		BigDecimal six = new BigDecimal(0);
+		BigDecimal seven = new BigDecimal(0);
+		BigDecimal eight = new BigDecimal(0);
+		BigDecimal night = new BigDecimal(0);
+		BigDecimal ten = new BigDecimal(0);
+		BigDecimal eleven = new BigDecimal(0);
+		BigDecimal twelve = new BigDecimal(0);
+		for (Expend ex : expend) {
+			if (ex.getSpendingtime().getMonth()+1==1 && date.getYear()==ex.getSpendingtime().getYear()) {
+				one = one.add(ex.getDebit());
+			}
+			if (ex.getSpendingtime().getMonth()+1==2  && date.getYear()==ex.getSpendingtime().getYear()) {
+				two = two.add(ex.getDebit());
+			}
+			if (ex.getSpendingtime().getMonth()+1==3  && date.getYear()==ex.getSpendingtime().getYear()) {
+				three = three.add(ex.getDebit());
+			}
+			if (ex.getSpendingtime().getMonth()+1==4  && date.getYear()==ex.getSpendingtime().getYear()) {
+				four = four.add(ex.getDebit());
+			}
+			if (ex.getSpendingtime().getMonth()+1==5  && date.getYear()==ex.getSpendingtime().getYear()) {
+				five = five.add(ex.getDebit());
+			}
+			if (ex.getSpendingtime().getMonth()+1==6  && date.getYear()==ex.getSpendingtime().getYear()) {
+				six = six.add(ex.getDebit());
+			}
+			if (ex.getSpendingtime().getMonth()+1==7  && date.getYear()==ex.getSpendingtime().getYear()) {
+				seven = seven.add(ex.getDebit());
+			}
+			if (ex.getSpendingtime().getMonth()+1==8  && date.getYear()==ex.getSpendingtime().getYear()) {
+				eight = eight.add(ex.getDebit());
+			}
+			if (ex.getSpendingtime().getMonth()+1==9  && date.getYear()==ex.getSpendingtime().getYear()) {
+				night = night.add(ex.getDebit());
+			}
+			if (ex.getSpendingtime().getMonth()+1==10  && date.getYear()==ex.getSpendingtime().getYear()) {
+				ten = ten.add(ex.getDebit());
+			}
+			if (ex.getSpendingtime().getMonth()+1==11  && date.getYear()==ex.getSpendingtime().getYear()) {
+				eleven = eleven.add(ex.getDebit());
+			}
+			if (ex.getSpendingtime().getMonth()+1==12  && date.getYear()==ex.getSpendingtime().getYear()) {
+				twelve = twelve.add(ex.getDebit());
+			}
+		}
+		list.add(one);
+		list.add(two);
+		list.add(three);
+		list.add(four);
+		list.add(five);
+		list.add(six);
+		list.add(seven);
+		list.add(eight);
+		list.add(night);
+		list.add(ten);
+		list.add(eleven);
+		list.add(twelve);
+		request.setAttribute("list", list);
+		BigDecimal year = new BigDecimal(0);
+		//获取本年度总值
+		year = year.add(one).add(two).add(three).add(four).add(five).add(six).add(seven).add(eight).add(night).add(ten).add(eleven).add(twelve);
+		System.out.println(year);
+		request.setAttribute("year", year.toString());
+		//获取本月总值
+		BigDecimal mouth = new BigDecimal(0);
+		for (Expend ex : expend) {
+			if (ex.getSpendingtime().getMonth() == date.getMonth()) {
+				mouth = mouth.add(ex.getDebit());
+			}
+		}
+		request.setAttribute("mouth", mouth.toString());
+		System.out.println(mouth);
+		return "analyze";
+	}
+	
+	@RequestMapping("/linechart")
+	@RequiresPermissions("linechart:view")
+	@PermissionName("支出分析线形图")
+	public String linechart(ExpendQuery qo ,HttpServletRequest request){
+		List<Expend> expend = service.selectAll(qo);
+		List<String> names = new ArrayList<>();
+		List<BigDecimal> prices = new ArrayList<>();
+		for (Expend exp : expend) {
+			String name = exp.getSmallClassify().getName();
+			names.add(name);
+			prices.add(exp.getDebit());
+		}
+		request.setAttribute("names", JSONUtils.toJSONString(names));
+		request.setAttribute("prices", prices);
+		return "linechart";
+		
+	}
+
+
+
+
+
+
+
+
+
+
+
+}

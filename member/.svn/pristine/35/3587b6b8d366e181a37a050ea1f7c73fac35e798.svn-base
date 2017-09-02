@@ -1,0 +1,76 @@
+package com._520it.crm.web.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com._520it.crm.domain.Member;
+import com._520it.crm.page.PageResult;
+import com._520it.crm.query.MemberQueryObject;
+import com._520it.crm.service.IMemberService;
+import com._520it.crm.util.AjaxResult;
+
+@Controller
+public class MemberController {
+	@Autowired
+	IMemberService memberService;
+	
+	@RequestMapping("member")
+	public String index(){
+		return "member";
+	}
+	@RequestMapping("member_list")
+	@ResponseBody
+	public PageResult list(MemberQueryObject qo){
+		PageResult pageResult = null;
+		pageResult = memberService.queryPage(qo);
+		return pageResult;
+	}
+	@RequestMapping("member_save")
+	@ResponseBody
+	public AjaxResult save(Member member){
+		AjaxResult result = null;
+		try{
+			memberService.insert(member);
+			result = new AjaxResult(true,"保存成功");
+		}catch(Exception e){
+			e.printStackTrace();
+			result = new AjaxResult(false,"保存失败,请联系管理员！");
+		}
+		return result;
+	}
+	@RequestMapping("member_update")
+	@ResponseBody
+	public AjaxResult update(Member member){
+		AjaxResult result = null;
+		try{
+			memberService.updateByPrimaryKey(member);
+			result = new AjaxResult(true,"更新成功");
+		}catch(Exception e){
+			e.printStackTrace();
+			result = new AjaxResult(false,"更新失败,请联系管理员！");
+		}
+		return result;
+	}
+	@RequestMapping("member_delete")
+	@ResponseBody
+	public AjaxResult delete(Long memberId){
+		AjaxResult result = null;
+		try{
+			memberService.deleteByPrimaryKey(memberId);
+			result = new AjaxResult(true,"删除成功");
+		}catch(Exception e){
+			e.printStackTrace();
+			result = new AjaxResult(false,"删除失败,请联系管理员！");
+		}
+		return result;
+	}
+	@RequestMapping("meberId")
+	@ResponseBody
+	public List<Member> meberId(){
+		return  memberService.selectAll();
+	}
+}

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.ClientMapper">
+	<resultMap id="BaseResultMap" type="com._520it.crm.domain.Client">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<association property="member" javaType="com._520it.crm.domain.Member"
+			columnPrefix="m_">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="sn" column="sn" />
+			<result property="phone" column="phone" />
+			<result property="password" column="password" />
+			<result property="birthday" column="birthday" />
+			<result property="gender" column="gender" />
+			<result property="qq" column="qq" />
+			<result property="address" column="address" />
+			<result property="payment" column="payment" />
+			<result property="remark" column="remark" />
+			<result property="integral" column="integral" />
+			<result property="usedintegral" column="usedintegral" />
+			<result property="totalMoney" column="totalMoney" />
+			<result property="totalConsume" column="totalConsume" />
+			<result property="deadline" column="deadline" />
+			<association property="referrer" javaType="com._520it.crm.domain.Member"
+				columnPrefix="mb_">
+				<id property="id" column="id" />
+				<result property="name" column="name" />
+			</association>
+			<association property="level" javaType="com._520it.crm.domain.MemberLevel"
+				columnPrefix="ml_">
+				<id property="id" column="id" />
+				<result property="name" column="name" />
+			</association>
+		</association>
+		<collection property="products" ofType="com._520it.crm.domain.Product">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="sn" column="sn" />
+			<result property="price" column="price" />
+			<result property="costPrice" column="costPrice" />
+			<result property="lowPrice" column="lowPrice" />
+			<result property="lowDiscount" column="lowDiscount" />
+			<result property="stock" column="stock" />
+			<result property="units" column="units" />
+			<result property="overdue" column="overdue" />
+			<result property="remark" column="remark" />
+			<result property="weight" column="weight" />
+			<result property="integral" column="integral" />
+
+		</collection>
+	</resultMap>
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		delete from client
+		where id = #{id}
+	</delete>
+	<insert id="insert" parameterType="com._520it.crm.domain.Client"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into client
+		(member_id,name)
+		values
+		(#{member.id},#{name})
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Client">
+		update client
+		set
+		member_id=#{member.id},
+		name=#{name}
+		where id = #{id}
+	</update>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="long">
+		select * from client where id = #{id}
+	</select>
+	<select id="selectToall" resultType="com._520it.crm.domain.Client">
+		select * from client
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap">
+		select c.*,m.id m_id,m_.name
+		m_name,mb.id mb_id,mb.name mb_name,mb.discount mb_discount
+		from client
+		c left join member m on c.member_id=m.id
+		left join memberlevel mb on
+		m.level_id=mb.id;
+	</select>
+	<sql id="conditionSql">
+		<where>
+		</where>
+	</sql>
+	<select id="queryPageCount" resultType="long">
+		select count(c.id) from client c left join member m on
+		c.member_id=m.id
+		join memberlevel mb on m.level_id=mb.id
+		<include refid="conditionSql" />
+	</select>
+	<select id="queryPageData" resultMap="BaseResultMap">
+		select c.*,m.id m_id,m.name m_name,m.level_id m_level_id,mb.id
+		mb_id,mb.name mb_name,mb.discount mb_discount,p.id p_id,p.name p_name
+		from client c left join
+		member m on c.member_id=m.id
+		left join memberlevel mb on
+		m.level_id=mb.id 
+		join client_product cp on c.id=cp.client_id
+		join product p on p.id=cp.product_id
+		<include refid="conditionSql" />
+		limit #{start},#{rows}
+	</select>
+	<insert id="insertRelation">
+		insert into client_product(client_id,product_id)
+		values(#{clientId},#{productId})
+	</insert>
+
+	<!-- 打破关系 -->
+	<delete id="deleteRelation">
+		delete from client_product where client_id = #{clientId}
+	</delete>
+	<!-- 通过顾客查询购买商品 -->
+	<select id="getProductByClientId" resultType="com._520it.crm.domain.Product">
+		select id,name
+		from product where id in 
+		(select product_id from client_product where client_id=#{clientId}) 
+	</select>
+</mapper>

@@ -1,0 +1,50 @@
+package com._520it.crm.service.impl;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com._520it.crm.domain.Product;
+import com._520it.crm.mapper.ProductMapper;
+import com._520it.crm.page.PageResult;
+import com._520it.crm.query.QueryObject;
+import com._520it.crm.service.IProductService;
+
+@Service
+public class ProductServiceImpl implements IProductService {
+	@Autowired
+	private ProductMapper prodcutMapper;
+
+	public int deleteByPrimaryKey(Long id) {
+		return prodcutMapper.deleteByPrimaryKey(id);
+	}
+
+	public int insert(Product record) {
+		return prodcutMapper.insert(record);
+	}
+
+	public Product selectByPrimaryKey(Long id) {
+		return prodcutMapper.selectByPrimaryKey(id);
+	}
+
+	public List<Product> selectAll() {
+		return prodcutMapper.selectAll();
+	}
+
+	public int updateByPrimaryKey(Product record) {
+		return prodcutMapper.updateByPrimaryKey(record);
+	}
+
+	@Override
+	public PageResult queryPage(QueryObject qo) {
+		Long count = prodcutMapper.queryPageCount(qo);
+		if (count <= 0) {
+			return new PageResult(0L, Collections.EMPTY_LIST);
+		}
+		List<Product> result = prodcutMapper.queryPageData(qo);
+		PageResult pageResult = new PageResult(count, result);
+		return pageResult;
+	}
+}

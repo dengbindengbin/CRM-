@@ -1,0 +1,18 @@
+package com._520it.crm.service;
+
+import java.util.List;
+
+import com._520it.crm.domain.Classify;
+
+public interface IClassifyService {
+	int deleteByPrimaryKey(Long id);
+
+	int insert(Classify record);
+
+	Classify selectByPrimaryKey(Long id);
+
+	List<Classify> selectAll();
+
+	int updateByPrimaryKey(Classify record);
+
+}

@@ -1,0 +1,129 @@
+$(function() {
+	// 抽取变量
+	var stocktaking_datagrid = $("#stocktaking_datagrid");
+	
+
+	// 初始化数据表格
+	stocktaking_datagrid.datagrid({
+		// 获取商品表列表
+		url : "/stocktaking_list",
+		fitColumns : true,
+		striped : true,
+		fit : true,
+		pagination : true,
+		singleSelect : true,
+		toolbar : '#stocktaking_tb',
+		columns : [ [ {
+			field : 'sn',
+			title : '商品编码',
+			width : 100
+		}, {
+			field : 'name',
+			title : '商品名称',
+			width : 100
+		}, {
+			field : 'kind',
+			title : '商品类型',
+			width : 100
+		}, {
+			field : 'units',
+			title : '商品单位',
+			width : 100
+		}, {
+			field : 'stock',
+			title : '库存数量',
+			width : 100
+		}] ]
+	});
+
+	
+
+	// 部门格式化
+	function deptFormatter(value, row, index) {
+		return value ? value.name : "";
+	}
+
+	// 获取部门的其他数据,但是field不能设置重复,我们就通过row来获取
+	/*
+	 * function deptFormatter1(value,row,index){ return row.dept?row.dept.id:""; }
+	 */
+	// 状态格式化
+	function stateFormatter(value, row, index) {
+		return value ? "在职" : "<font color='red'>离职</font>";
+	}
+
+	// 是否管理员格式化
+	function adminFormatter(value, row, index) {
+		return value ? "是" : "否";
+	}
+
+	var obj = {
+		name : 'will',
+		showName : function() {
+			alert(1)
+		}
+	}
+	// 调用对象的方法的几种方式
+/*	obj.showName();
+	obj["showName"]();
+	var tstocktaking = "showName";
+	obj[tstocktaking]();*/
+
+	// 使用对象来统一管理方法
+	var methodObj = {
+		
+		// 设置为离职
+		changeState : function() {
+			// 判断是否选中数据
+			var row = stocktaking_datagrid.datagrid("getSelected");
+			if (!row) {
+				$.messager.alert('温馨提示', '请选中一条数据!', 'info');
+				return;
+			}
+			// 弹出确认框
+			$.messager.confirm('确认对话框', '您想要设置该员工为离职吗？', function(r) {
+				if (r) {
+					$.post("/stocktakingloyee_changeState", {
+						id : row.id
+					}, function(data) {
+						$.messager.alert('温馨提示', data.msg, 'info', function() {
+							// 刷新数据表格(保持在当前页)
+							stocktaking_datagrid.datagrid("reload");
+						});
+					})
+				}
+			});
+		},
+
+		// 高级查询
+		searchForm : function() {
+			// 获取关键字文本框的值
+			var keyword = $("[name='keyword']").val();
+
+			stocktaking_datagrid.datagrid('load', {
+				keyword : keyword
+			});
+		},
+
+		// 查询全部数据
+		reload : function() {
+			// 清空查询条件的内容
+			$("[name='keyword']").val('');
+
+			stocktaking_datagrid.datagrid('load', {});
+		},
+		//导出文件
+		exportFile:function(){
+			window.location.href="/stocktakingloyee_export";
+		}
+	}
+
+	//统一绑定事件
+	$("a[data-cmd]").on("click",function(){
+		//获取该链接需要执行的方法名字
+		var methodName = $(this).data("cmd");
+		//掉用方法
+		methodObj[methodName]();
+	})
+	
+})

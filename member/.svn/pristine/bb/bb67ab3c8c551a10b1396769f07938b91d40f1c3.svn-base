@@ -1,0 +1,87 @@
+package com._520it.crm.web.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com._520it.crm.domain.SmallClassify;
+import com._520it.crm.page.PageResult;
+import com._520it.crm.query.SmallClassifyQueryObject;
+import com._520it.crm.service.ISmallClassifyService;
+import com._520it.crm.util.AjaxResult;
+
+@Controller
+public class SmallClassifyController {
+	@Autowired
+	ISmallClassifyService kindService;
+
+	@RequestMapping("/kind")
+	public String index() {
+		return "kind";
+	}
+
+	@RequestMapping("/kind_save")
+	@ResponseBody
+	public AjaxResult save(SmallClassify kind) {
+		AjaxResult result = null;
+		try {
+			kindService.insert(kind);
+			result = new AjaxResult(true, "保存成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = new AjaxResult(false, "保存失败,请联系管理员！");
+		}
+		return result;
+	}
+
+	@RequestMapping("/kind_list")
+	@ResponseBody
+	public PageResult list(SmallClassifyQueryObject qo) {
+		PageResult pageResult = null;
+		pageResult = kindService.queryPage(qo);
+		return pageResult;
+	}
+
+	@RequestMapping("/kind_listAll")
+	@ResponseBody
+	public List<SmallClassify> selectAll() {
+		return kindService.selectAll();
+	}
+
+	@RequestMapping("/kind_update")
+	@ResponseBody
+	public AjaxResult update(SmallClassify kind) {
+		AjaxResult result = null;
+		try {
+			kindService.updateByPrimaryKey(kind);
+			result = new AjaxResult(true, "更新成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = new AjaxResult(false, "更新失败,请联系管理员！");
+		}
+		return result;
+	}
+
+	@RequestMapping("/kind_delete")
+	@ResponseBody
+	public AjaxResult delete(Long kindId) {
+		AjaxResult result = null;
+		try {
+			kindService.deleteByPrimaryKey(kindId);
+			result = new AjaxResult(true, "删除成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = new AjaxResult(false, "删除失败,请联系管理员！");
+		}
+		return result;
+	}
+
+//	@RequestMapping("/getKindIdByProductId")
+//	@ResponseBody
+//	public List<Long> getRolesIdByEmployeeId(Long prodcutId) {
+//		return kindService.getKindIdByProductId(prodcutId);
+//	}
+}

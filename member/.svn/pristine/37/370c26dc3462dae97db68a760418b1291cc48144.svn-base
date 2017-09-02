@@ -1,0 +1,16 @@
+$(function(){
+	var myDate = new Date()
+	console.log(myDate.getFullYear()+'-');
+	
+	
+});
+function thisMonth(){
+	var myDate = new Date()
+	var month = myDate.getMonth()+1;
+	var year = myDate.getFullYear();
+	var day = myDate.getDate()
+	var begin = year+'-'+0+month+'-'+0+1;
+	console.log(begin);
+	 document.getElementById("line_from").action="/linechart?=begin"+begin+"&artType="+type;
+	  document.getElementById("line_from").submit();
+}

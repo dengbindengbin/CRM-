@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.SupplierMapper" >
+    <resultMap id="BaseResultMap" type="com._520it.crm.domain.Supplier" >
+        <id column="id" property="id"  />
+        <result column="phone" property="phone"  />
+        <result column="address" property="address"  />
+        <result column="debt" property="debt"  />
+        <result column="remark" property="remark"  />
+        <result column="QQ" property="QQ"  />
+        <result column="name" property="name"  />
+        <result column="addDate" property="addDate"  />
+        <result column="factory" property="factory"  />
+</resultMap>
+<delete id="deleteByPrimaryKey" parameterType="long" >
+delete from supplier where id = #{id}
+</delete>
+<insert id="insert" parameterType="com._520it.crm.domain.Supplier" useGeneratedKeys="true" keyProperty="id" >
+insert into supplier
+(phone,address,debt,remark,QQ,name,addDate,factory)
+        values
+        (#{phone},#{address},#{debt},#{remark},#{QQ},#{name},#{addDate},#{factory})
+        </insert>
+<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Supplier" >
+update supplier
+set
+phone=#{phone},
+address=#{address},
+debt=#{debt},
+remark=#{remark},
+QQ=#{QQ},
+name=#{name},
+addDate=#{addDate},
+factory=#{factory}
+        where id = #{id}
+        </update>
+<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+select * from supplier where id = #{id}
+</select>
+<select id="selectAll" resultMap="BaseResultMap" >
+select * from supplier
+</select>
+<sql id="conditionSql">
+<where>
+</where>
+</sql>
+<select id="queryPageCount" resultType="long">
+select count(0) from supplier
+<include refid="conditionSql"/>
+</select>
+<select id="queryPageData" resultMap="BaseResultMap">
+select * from supplier
+<include refid="conditionSql"/>
+limit #{start},#{rows}
+</select>
+        </mapper>

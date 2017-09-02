@@ -1,0 +1,4 @@
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://192.168.17.130/member
+jdbc.username=sky
+jdbc.password=666666

@@ -1,0 +1,191 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>会员充值管理</title>
+<%@include file="/static/common/common.jsp" %>
+    <script type="text/javascript" src="/static/plugins/layui/layui.js"></script>
+    <link rel="stylesheet" href="/static/plugins/layui/css/layui.css"  media="all">
+<script type="text/javascript" src="/static/js/memberPayment.js"></script>
+    <script type="text/javascript" src="/static/plugins/My97DatePicker/My97DatePicker/WdatePicker.js"></script>
+    <script>
+        layui.use('form', function () {
+        });
+
+        $(function () {
+            $("[name=paymentTime]").addClass("Wdate").click(function () {
+                WdatePicker()
+            })
+        })
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $(".tips").mouseenter(function () {
+                layer.tips($(this).data("content"),$(this),{
+                    tips:[2,'#259926'],
+                    maxWidth:200,
+                    time:1200
+                })
+            })
+        })
+    </script>
+</head>
+<body>
+
+
+<div id="cc" class="easyui-layout" data-options="fit:true">
+	<div data-options="region:'south',title:'会员充值记录',split:true" style="height:240px;">
+
+		<table id="memberPayment_datagrid">
+			<thead>
+			<tr>
+				<%--		<th data-options="field:'member',width:15,align:'center'">会员列表</th>--%>
+				<th data-options="field:'sn',width:15,align:'center'">会员卡号</th>
+				<th data-options="field:'payment',width:15,align:'center',formatter:paytypeFormatter">支付类型</th>
+				<th data-options="field:'payMoney',width:15,align:'center'">充值金额</th>
+				<th data-options="field:'giveMoney',width:15,align:'center'">赠送金额</th>
+				<th data-options="field:'totalMoney',width:15,align:'center'">变动后总金额</th>
+				<th data-options="field:'paymentTime',width:15,align:'center'">充值时间</th>
+				<th data-options="field:'remark',width:15,align:'center'">备注信息</th>
+			</tr>
+			</thead>
+		</table>
+		<!-- 数据表格CRUD按钮 -->
+		<div id="memberPayment_datagrid_tb">
+			<div>
+                <button class="layui-btn layui-btn-primary layui-btn-mini">刷新按钮</button>
+			</div>
+		</div>
+
+	</div>
+	<div data-options="region:'center',title:'会员充值'" style="padding:5px;background:#eee;background-color: white">
+        <button class="layui-btn layui-btn-primary layui-btn-radius" style="float: left;margin-left: 200px" onclick="openMemberMsg()">
+            <i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe613;</i>
+        </button>
+        <i class="layui-icon tips" style="font-size: 30px; color: #1E9FFF;" data-content="亲，主人，点击左边的按钮，可以弹出会员信息表
+        ，双击后，可以获取到会员的信息信息哦，快来试试吧">&#xe607;</i>
+        <br/>
+        <form method="post" id="memberPayment_form" class="layui-form">
+            <table align="center">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">充值金额</label>
+                    <div class="layui-input-block">
+                        <input name="payMoney" style="color: #7e7e7e;width: 300px" placeholder="请输入充值金额" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">赠送金额</label>
+                    <div class="layui-input-block">
+                        <input name="giveMoney" style="color: #7e7e7e;width: 300px" placeholder="请输入赠送金额" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item" style="width: 500px">
+                    <label class="layui-form-label">支付方式</label>
+                    <div class="layui-input-block">
+                        <select name="payment" lay-filter="aihao">
+                            <option value="1">现金</option>
+                            <option value="2" selected="">微信</option>
+                            <option value="3">支付宝</option>
+                            <option value="4">银行卡</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">充值时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name="paymentTime" id="test1" placeholder="yyyy-MM-dd">
+                    </div>
+                </div>
+                </div>
+                <div class="layui-form-item layui-form-text" style="width: 500px">
+                    <label class="layui-form-label">备注信息</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入内容" name="remark" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+            </table>
+        </form>
+        <button class="layui-btn layui-btn-primary layui-btn-radius" style="float: left;margin-left: 100px" onclick="cancelItem()">重置</button>
+        <button class="layui-btn layui-btn-normal layui-btn-radius" style="float: left;margin-left:80px " onclick="saveItem()">确定</button>
+	</div>
+
+
+
+	<div data-options="region:'west',title:'会员的详细信息',split:false,border:false" style="width:700px;background-color: white	">
+
+        <form class="layui-form" action="#" id="memberPaymentMsg">
+            <input type="hidden" name="id" />
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <li>
+                        会员卡号 :<span name="sn"></span>
+                    </li>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <li>
+                        会员姓名  :   <span name="name"></span>
+                    </li>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <li>
+                        会员等级  :   <span name="level"></span>
+                    </li>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <li>
+                        会员生日  :   <span name="birthday"></span>
+                    </li>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <li>
+                        卡片余额 :<font style='color: #ff568f'>￥</font>
+                        <font style="color: red"><span name="totalMoney"/></font></span>
+                    </li>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <li>
+                        当前积分  :    <span name="integral"></span>
+                    </li>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <li>
+                        过期时间  :    <span name="deadline"></span>
+                    </li>
+                </div>
+            </div>
+        </form>
+    <div>
+</div>
+
+<!-- 定义一个dialog 里面包裹着datagrid，存储着会员的信息信息 -->
+        <div id="memberMsg_dialog">
+            <!--  里面包裹着datagrid，存储着会员的信息信息 -->
+            <table id="member_datagrid" >
+
+            </table>
+        </div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<%@ page language="java" contentType="text/html;charset=utf-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<%@include file="/static/common/common.jsp" %>
+
+<script type="text/javascript" src="/static/js/purchaseControl.js"></script>
+</head>
+<body>
+	
+	<div id="role_btns">
+		<a class="easyui-linkbutton" data-options="plain:true" data-cmd="procurement">商品采购</a>
+		<a class="easyui-linkbutton" data-options="plain:true" data-cmd="distributor">供应商管理</a>
+		<a class="easyui-linkbutton" data-options="plain:true" data-cmd="storeManagement">仓库管理</a>
+		<a class="easyui-linkbutton" data-options="plain:true" data-cmd="allot">仓库调拨</a>
+	</div>
+	<table>
+	
+	</table>
+
+
+</body>
+</html>

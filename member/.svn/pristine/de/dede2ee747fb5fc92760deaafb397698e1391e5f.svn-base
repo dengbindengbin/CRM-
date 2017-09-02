@@ -1,0 +1,11 @@
+package com._520it.crm.query;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter@Getter
+public class MemberPaymentQueryObject extends QueryObject {
+
+    //关联会员列表的id
+    private Long memberId;
+}

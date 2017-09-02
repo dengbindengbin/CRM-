@@ -1,0 +1,61 @@
+package com._520it.crm.domain;
+
+import genertor.ObjectProp;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@ObjectProp("商品")
+public class Product {
+	@ObjectProp("商品ID")
+	private Long id;
+	@ObjectProp("商品名称")
+	private String name;
+	@ObjectProp("商品编码")
+	private String sn;
+	@ObjectProp("商品售价")
+	private BigDecimal price;
+	@ObjectProp("商品进价")
+	private BigDecimal costPrice;
+	@ObjectProp("最低售价")
+	private BigDecimal lowPrice;
+	@ObjectProp("最高售价")
+	private BigDecimal lowDiscount;
+	@ObjectProp("商品库存")
+	private Long stock;
+	@ObjectProp("商品单位")
+	private String units;
+	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@ObjectProp("过期时间")
+	private Date overdue;
+	@ObjectProp("备注信息")
+	private String remark;
+	@ObjectProp("是否计重")
+	private Boolean weight;
+	@ObjectProp("商品积分")
+	private Long integral;
+
+	@ObjectProp("商品图片")
+	private String file;
+
+
+	@ObjectProp("商品类型")
+	private ProductClassify kind;
+	
+}

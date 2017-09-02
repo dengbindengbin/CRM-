@@ -1,0 +1,104 @@
+$(function(){
+	var myDate = new Date()
+	console.log(myDate.getFullYear()+'-');
+	
+	
+});
+function thisMonth(){
+	var myDate = new Date()
+	var month = myDate.getMonth()+1;
+	var year = myDate.getFullYear();
+	var day = myDate.getDate()
+	var begin = year+'-'+0+month+'-'+0+1;
+	 var  day = new Date(year,month,0);   
+     var end = year + '-' + 0 + month + '-' + day.getDate();//获取当月最后一天日期 
+	console.log(begin);
+	console.log(end);
+	 document.getElementById("line_from").action="/linechart?begin="+begin+"&end="+end;
+	  document.getElementById("line_from").submit();
+}
+function lastMonth(){
+	var myDate = new Date()
+	var month = myDate.getMonth();
+	var year = myDate.getFullYear();
+	var day = myDate.getDate()
+	var begin = year+'-'+0+month+'-'+0+1;
+	var  day = new Date(year,month,0);   
+	var end = year + '-' + 0 + month + '-' + day.getDate();//获取当月最后一天日期 
+	console.log(begin);
+	console.log(end);
+	document.getElementById("line_from").action="/linechart?begin="+begin+"&end="+end;
+	document.getElementById("line_from").submit();
+}
+function thisQuarter(){
+	var myDate = new Date()
+	var month = myDate.getMonth()+1;
+	var year = myDate.getFullYear();
+	var begin;
+	var end
+	if (month>=1 && month<=3) {
+		begin = year+'-'+01+'-'+01; 
+		end = year+'-'+03+'-'+31;
+	}
+	if (month>=4 && month<=6) {
+		begin = year+'-'+04+'-'+30; 
+		end = year+'-'+06+'-'+30;
+	}
+	if (month>=7 && month<=9) {
+		begin = year+'-'+07+'-'+01; 
+		end = year+'-'+09+'-'+30;
+	}
+	if (month>=10 && month<=12) {
+		begin = year+'-'+10+'-'+01; 
+		end = year+'-'+12+'-'+31;
+	}
+	console.log(begin);
+	console.log(end);
+	document.getElementById("line_from").action="/linechart?begin="+begin+"&end="+end;
+	document.getElementById("line_from").submit();
+}
+
+function lastQuarter(){
+	var myDate = new Date()
+	var month = myDate.getMonth()+1;
+	var year = myDate.getFullYear();
+	var begin;
+	var end
+	if (month-3>=1 && month-3<=3) {
+		begin = 2017+'-'+01+'-'+01; 
+		end = 2017+'-'+03+'-'+31;
+	}
+	if (month-3>=4 && month-3<=6) {
+		begin = 2017+'-'+04+'-'+30; 
+		end = 2017+'-'+06+'-'+30;
+	}
+	if (month-3>=7 && month-3<=9) {
+		begin = 2017+'-'+07+'-'+01; 
+		end = 2017+'-'+09+'-'+30;
+	}
+	if (mouth<=0) {
+		year = year -1;
+		begin = year+'-'+10+'-'+01; 
+		end = year+'-'+12+'-'+31;
+	}
+	console.log(begin);
+	console.log(end);
+	document.getElementById("line_from").action="/linechart?begin="+begin+"&end="+end;
+	document.getElementById("line_from").submit();
+}
+function thisYear(){
+	var myDate = new Date()
+	var year = myDate.getFullYear();
+	var begin =  year + '-' + 01 +'-'+01
+	var end = year + '-' + 12 +'-'+ 30
+	document.getElementById("line_from").action="/linechart?begin="+begin+"&end="+end;
+	document.getElementById("line_from").submit();
+}
+function lastYear(){
+	var myDate = new Date()
+	var year = myDate.getFullYear()-1;
+	var begin =  year + '-' + 01 +'-'+01
+	var end = year + '-' + 12 +'-'+ 30
+	document.getElementById("line_from").action="/linechart?begin="+begin+"&end="+end;
+	document.getElementById("line_from").submit();
+}

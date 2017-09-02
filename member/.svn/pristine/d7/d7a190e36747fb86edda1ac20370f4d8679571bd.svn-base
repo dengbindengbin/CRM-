@@ -1,0 +1,32 @@
+package com._520it.crm.web.controller;
+
+import java.util.List;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com._520it.crm.domain.Classify;
+import com._520it.crm.domain.Department;
+import com._520it.crm.query.EmployeeQuery;
+import com._520it.crm.service.IClassifyService;
+import com._520it.crm.service.IDepartmentService;
+import com._520it.crm.util.PermissionName;
+
+@Controller
+public class ClassifyController {
+
+	@Autowired
+	private IClassifyService service;
+
+
+	@RequestMapping("/classify_selectAll")
+	@ResponseBody
+	@RequiresPermissions("classify:list")
+	@PermissionName("分类列表")
+	public List<Classify> list(){
+		return service.selectAll();
+	}
+}

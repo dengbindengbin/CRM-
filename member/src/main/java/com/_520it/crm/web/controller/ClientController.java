@@ -1,0 +1,85 @@
+package com._520it.crm.web.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com._520it.crm.domain.Client;
+import com._520it.crm.domain.Member;
+import com._520it.crm.page.PageResult;
+import com._520it.crm.query.ClientQueryObject;
+import com._520it.crm.service.IClientService;
+import com._520it.crm.util.AjaxResult;
+import com._520it.crm.vo.ClientVo;
+
+@Controller
+public class ClientController {
+	@Autowired
+	IClientService clientService;
+	
+	@RequestMapping("client")
+	public String index(){
+		return "client";
+	}
+	@RequestMapping("client_list")
+	@ResponseBody
+	public PageResult list(ClientQueryObject qo){
+		PageResult pageResult = null;
+		pageResult = clientService.queryPage(qo);
+		return pageResult;
+	}
+	@RequestMapping("client_all")
+	@ResponseBody
+	public List<Client> allList(){
+		List<Client> selectToall = clientService.selectToall();
+		return selectToall;
+	}
+	@RequestMapping("client_save")
+	@ResponseBody
+	public ClientVo save(Client client,Long memberId){
+		Long id = null;
+		try{
+			Member member = new Member();
+			if (memberId != null) {
+				member.setId(memberId);
+			}
+			client.setMember(member);
+			  clientService.insert(client);
+			  id = client.getId();
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			
+		}
+		return new ClientVo(id);
+	}
+	@RequestMapping("client_update")
+	@ResponseBody
+	public AjaxResult update(Client client){
+		AjaxResult result = null;
+		try{
+			clientService.updateByPrimaryKey(client);
+			result = new AjaxResult(true,"更新成功");
+		}catch(Exception e){
+			e.printStackTrace();
+			result = new AjaxResult(false,"更新失败,请联系管理员！");
+		}
+		return result;
+	}
+	@RequestMapping("client_delete")
+	@ResponseBody
+	public AjaxResult delete(Long clientId){
+		AjaxResult result = null;
+		try{
+			clientService.deleteByPrimaryKey(clientId);
+			result = new AjaxResult(true,"删除成功");
+		}catch(Exception e){
+			e.printStackTrace();
+			result = new AjaxResult(false,"删除失败,请联系管理员！");
+		}
+		return result;
+	}
+}

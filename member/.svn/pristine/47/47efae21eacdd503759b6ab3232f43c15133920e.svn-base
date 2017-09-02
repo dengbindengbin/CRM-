@@ -1,0 +1,383 @@
+<%@ page language="java" contentType="text/html;charset=UTF-8"
+    %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Insert title here</title>
+ <link rel="stylesheet" href="/static/css/bootstrap.css?v=IW-m2ufkFbmwZUCZ2zv-8lfKGX8QpmWa_ols-L_APnE">
+<link rel="stylesheet" type="text/css" href="/static/css/buttons.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/component.css" />
+<link rel="stylesheet" type="text/css" href= "/static/css/demo.css"/>
+<link rel="stylesheet" type="text/css" href= "/static/css/font-awesome.min.css"/>
+<link rel="stylesheet" type="text/css" href= "/static/css/index.css"/>
+<link rel="stylesheet" type="text/css" href= "/static/css/introjs.min.css"/>
+<link rel="stylesheet" type="text/css" href= "/static/css/normalize.css"/>
+<link rel="stylesheet" type="text/css" href= "/static/css/order.css"/>
+<link rel="stylesheet" type="text/css" href= "/static/css/style.css"/>
+<link rel="stylesheet" href= "/static/css/iconfont.css"/>
+<style>
+        .am-color-red {
+            color: red;
+        }
+
+        .dropdown-menu {
+            min-width: 120px;
+        }
+
+            .dropdown-menu a {
+                text-align: center;
+            }
+
+        .modal-body .col-xs-3 {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .modal-body a {
+            color: #000;
+        }
+
+        .modal-body .col-xs-3 p {
+            margin-top: 15px;
+        }
+
+        .scale {
+            transform: scale(1.1);
+            transition: all 0.2s;
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+
+        .form-group-h1 {
+            text-align: center;
+            border-bottom: 1px solid #eeeeee;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .am-formgroup-li {
+            padding: 20px 20px 0px 20px;
+        }
+
+        .am-img1 {
+            width: 20px;
+            position: absolute;
+            transform: translateY(-21px);
+            left: 20px;
+            margin-left: 6px;
+        }
+
+        body {
+            font-family: '微软雅黑';
+        }
+
+        .win7 {
+            position: fixed;
+            z-index: 100;
+            width: 100%;
+            height: 100%;
+        }
+
+        .youku1imgbox {
+            width: 70px;
+            height: 70px;
+            margin: auto;
+            background: url('../images/youkuvideo.png');
+        }
+
+        .youku1img1 {
+            background-position-y: 0px;
+        }
+
+        .youku1img2 {
+            background-position-y: -70px;
+        }
+
+        .youku1img3 {
+            background-position-y: -140px;
+        }
+
+        .youku1img4 {
+            background-position-y: -210px;
+        }
+
+        .youku1img5 {
+            background-position-y: -280px;
+        }
+
+        .youku1img6 {
+            background-position-y: -350px;
+        }
+
+        .youku1img7 {
+            background-position-y: -420px;
+        }
+
+        .youku1img8 {
+            background-position-y: -560px;
+        }
+    </style>
+   <link rel="stylesheet" type="text/css" href="/static/css/attr.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+</head>
+<body>
+<div class="indexpage">
+
+    <!--主体内容导航 start----->
+    <section class="main_box">
+        <!--首页的磁贴 start-->
+        <div class="citiebox">
+            <div class="row">
+                <div class="col-xs-3 ">
+                    <div class="xos1  misu">
+                        <a href="/counter" class="boxsmall bgred hover-shadow"><i class="iconfont"></i><span>前台收银</span></a>
+                        <a href="/stocktaking" onclick="javascript: layer.msg('扫码付款已上线，欢迎使用!~')" class="boxin bgshe"><i class="iconfont fontasssscxc"></i><span>产品盘点</span></a>
+                    </div>
+                    <div class="misu xos1  ">
+                        <a href="/member#adduser" class="bgbule boxsmall push"><i class="iconfont"></i><span>新增会员</span></a>
+                        <a href="/integralChange" class="bgshe boxsmall  push"><i class="iconfont"></i><span>积分变动</span></a>
+                        <a href="/classify" class="bgjls boxsmall  push"><i class="iconfont"></i><span>支出分类</span></a>
+                    </div>
+                </div>
+                <div class="col-xs-3 ">
+                    <div class="xos2  misu">
+                        <a href="/memberPayment" class="boxbig bgqxl"><i class="iconfont" ></i><span>会员充值</span></a>
+                        <a href="/sale_index" class="boxbig bhybs"><i class="iconfont fontsss"></i><span>销售分析</span></a>
+                        <a href="/analyze" class="boxbig bgqlve"><i class="iconfont"></i><span>支出分析</span></a>
+                    </div>
+                </div>
+                <div class="col-xs-3 ">
+                    <div class="xos2  misu">
+                        <a href="/purchaseControl" class="boxbig bgtzs"><span>进货管理</span></a>
+                    </div>
+                    <div class="xos1 misu mr1em">
+                        <a href="/dictionary" class="boxsmall bgsls"><i class="iconfont fontcccc"></i><span>数据字典</span></a>
+                    </div>
+                    <div class="xos1 misu " style="margin-right: 0;">
+                        <a href="/employee" class="boxsmall bgszs"><span>员工管理</span></a>
+                    </div>
+                    <div class="xos2  misu ">
+                        <a href="/expend" class="boxbig bgths"><i class="iconfont fontqjsz"></i><span>支出明细</span></a>
+                    </div>
+                </div>
+                <div class="col-xs-3 ">
+                    <div class="xos1  misu ">
+                        <a href="/product.do" class="boxin bgsclv"><i class="iconfont fontasssscxc"></i><span>商品列表</span></a>
+                        <a href="/system" class="boxsmall bgxxzs"><i class="iconfont"></i><span>分店管理</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--首页的磁贴 end---->
+    </section>
+    <!--主体内容导航 end------->
+    <!----脚部 start-------->
+    <footer class="index_footer" id="index_footer"></footer>
+    <!----脚部 end-------->
+
+</div>
+
+<style>
+    .floatCtro {
+        width: 55px;
+        height: 180px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 100;
+        cursor: pointer;
+    }
+
+    .gonggao_1 {
+        display: none;
+        font-family: SimHei;
+        display: none;
+    }
+
+        .gonggao_1 li {
+            min-height: 25px;
+            line-height: 25px;
+            padding-left: 15px;
+            padding-right: 8px;
+            color: #666666;
+        }
+
+    .yanshi_btn {
+        font-size: 13px;
+        width: 50px;
+        height: 25px;
+        display: inline-block;
+        text-align: center;
+        color: #ffffff;
+        background-color: #31c47b;
+        float: right;
+        margin-right: 10px;
+        border-radius: 3px;
+    }
+
+    .active_block {
+        display: block;
+    }
+
+    .active_none {
+        display: none;
+    }
+
+    .selectcateringcontent {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        color: #fff;
+    }
+
+        .selectcateringcontent .shaerleftrightbox {
+            width: 50%;
+            float: left;
+            height: 100%;
+            position: relative;
+            transition: 0.35s;
+            cursor: pointer;
+        }
+
+        .selectcateringcontent .leftcenter {
+            background-color: #31c17b;
+        }
+
+        .selectcateringcontent .rightcenter {
+            background-color: #ce8639;
+        }
+
+        .selectcateringcontent .shaerleftrightbox .cateringcenter {
+            width: 200px;
+            height: 215px;
+            position: absolute;
+            padding-top: 15px;
+            margin: auto;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            text-align: center;
+        }
+
+            .selectcateringcontent .shaerleftrightbox .cateringcenter img {
+                transition: 0.35s;
+            }
+
+        .selectcateringcontent .shaerleftrightbox .cateringtitle p.smalltitle {
+            font-size: 20px;
+            line-height: 38px;
+        }
+
+        .selectcateringcontent .shaerleftrightbox .cateringtitle p {
+            line-height: 38px;
+            font-size: 16px;
+            transition: 0.35s;
+        }
+
+            .selectcateringcontent .shaerleftrightbox .cateringtitle p .ii {
+                padding-left: 10px;
+            }
+
+        .selectcateringcontent .shaerleftrightbox:hover img {
+            -webkit-animation-name: anam1;
+            -moz-animation-name: anam1;
+            animation-name: anam1;
+            -webkit-animation-duration: 1.5s;
+            -moz-animation-duration: 1.5s;
+            animation-duration: 1.5s;
+            -webkit-animation-timing-function: linear;
+            -moz-animation-timing-function: linear;
+            animation-timing-function: linear;
+            -moz-animation-iteration-count: 2;
+            -webkit-animation-iteration-count: 2;
+            -ms-animation-iteration-count: 2;
+            animation-iteration-count: 2;
+            animation-direction: reverse;
+            -webkit-animation-direction: reverse;
+            -moz-animation-direction: reverse;
+            -ms-animation-direction: reverse;
+        }
+</style>
+
+    <!--主体内容导航 end------->
+    <!--am-->
+    <!-- Button trigger modal -->
+    <!-- Modal -->
+    <div class="modal fade" id="myModalall" tabindex="-1" role="dialog" aria-labelledby="myModalLabelall">
+        <div style="top: 200px;width:620px" class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabelall">视频教程 </h4>
+                </div>
+                <div class="modal-body modea-img">
+                    <div class="col-xs-3">
+                        <a target="_blank" href="http://v.youku.com/v_show/id_XMTY3MjU5NTg4MA==.html">
+                            <div class="youku1imgbox youku1img1"></div>
+                            <p>收银记账</p>
+                        </a>
+                    </div>
+                    <div class="col-xs-3">
+                        <a target="_blank" href="http://v.youku.com/v_show/id_XMTY1ODgwMDU1Ng==.html">
+                            <div class="youku1imgbox youku1img2"></div>
+                            <p>会员管理</p>
+                        </a>
+
+                    </div>
+                    <div class="col-xs-3">
+                        <a target="_blank" href="http://v.youku.com/v_show/id_XMTY1ODgwNTMxNg==.html">
+                            <div class="youku1imgbox youku1img3"></div>
+                            <p>商品管理</p>
+                        </a>
+                    </div>
+                    <div class="col-xs-3">
+                        <a target="_blank" href="http://v.youku.com/v_show/id_XMTY1ODgwOTY1Mg==.html">
+                            <div class="youku1imgbox youku1img4"></div>
+                            <p>库存管理</p>
+                        </a>
+                    </div>
+                    <div class="col-xs-3">
+                        <a target="_blank" href="http://v.youku.com/v_show/id_XMTY1ODgxMjUzMg==.html">
+                            <div class="youku1imgbox youku1img5"></div>
+                            <p>日常支出</p>
+                        </a>
+                    </div>
+                    <div class="col-xs-3">
+                        <a target="_blank" href="http://v.youku.com/v_show/id_XMTY1ODgxNTA0NA==.html">
+                            <div class="youku1imgbox youku1img6"></div>
+                            <p>智能分析</p>
+                        </a>
+                    </div>
+                    <div class="col-xs-3">
+                        <a target="_blank" href="http://v.youku.com/v_show/id_XMTY1ODg2NDQzNg==.html ">
+                            <div class="youku1imgbox youku1img7"></div>
+                            <p>营销工具</p>
+                        </a>
+                    </div>
+                    <div class="col-xs-3">
+                        <a target="_blank" href="http://v.youku.com/v_show/id_XMTY1ODgxNzIzMg==.html">
+                            <div class="youku1imgbox youku1img8"></div>
+                            <p>系统设置</p>
+                        </a>
+                    </div>
+                </div>
+                <div style="border-top:0px;" class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <style> 
+    body{
+	width:100%;
+	height:100%;
+	background:url(/static/images/999.jpg);
+	}
+	</style> 
+
+</body>
+</html>

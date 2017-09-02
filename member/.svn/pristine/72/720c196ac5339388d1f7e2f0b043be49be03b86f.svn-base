@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.ProductMapper">
+	<resultMap id="BaseResultMap" type="com._520it.crm.domain.Product">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="sn" column="sn" />
+		<result property="price" column="price" />
+		<result property="costPrice" column="costPrice" />
+		<result property="lowPrice" column="lowPrice" />
+		<result property="lowDiscount" column="lowDiscount" />
+		<result property="stock" column="stock" />
+		<result property="units" column="units" />
+		<result property="overdue" column="overdue" />
+		<result property="remark" column="remark" />
+		<result property="weight" column="weight" />
+		<result property="integral" column="integral" />
+		<result property="file" column="file" /> 
+
+		<association property="kind" javaType="com._520it.crm.domain.ProductClassify"
+			columnPrefix="k_">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+		</association>
+	</resultMap>
+
+
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		delete from
+		product where id = #{id}
+	</delete>
+
+	<insert id="insert" parameterType="com._520it.crm.domain.Product"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into product
+		(file,sn,costPrice,weight,remark,lowPrice,units,integral,stock,price,lowDiscount,overdue,name,kind_id)
+		values
+		(#{file},#{sn},#{costPrice},#{weight},#{remark},#{lowPrice},#{units},#{integral},#{stock},#{price},#{lowDiscount},#{overdue},#{name},#{kind.id})
+	</insert>
+
+	<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Product">
+		update product
+		set
+		file=#{file},
+		sn=#{sn},
+		costPrice=#{costPrice},
+		weight=#{weight},
+		remark=#{remark},
+		lowPrice=#{lowPrice},
+		kind=#{kind.id},
+		units=#{units},
+		integral=#{integral},
+		stock=#{stock},
+		price=#{price},
+		lowDiscount=#{lowDiscount},
+		overdue=#{overdue},
+		name=#{name}
+		where id = #{id}
+	</update>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="long">
+		select * from product where id = #{id}
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap">
+		select p.id,p.file, p.sn, p.price,p.name,
+		p.costPrice, p.lowPrice,p.remark,
+		p.lowDiscount, p.stock,
+		p.units,p.overdue,p.weight,p.integral
+		,k.id k_id,k.name k_name
+		from 
+		product p left 
+		join productclass k on (p.kind_id= k.id)
+	</select>
+
+	<sql id="conditionSql">
+		<where>
+			<if test="keyword!=null and keyword!=''">
+				and (
+				p.name like concat('%',#{keyword},'%')
+				or p.sn like
+				concat('%',#{keyword},'%')
+				)
+			</if>
+			<if test="id!=null">
+				and p.id = #{id}
+			</if>
+		</where>
+	</sql>
+	<select id="queryPageCount" resultType="long">
+		select count(*) from product p
+		<include refid="conditionSql" />
+	</select>
+	<select id="queryPageData" resultMap="BaseResultMap">
+		select p.*, k.id k_id ,k.name k_name
+		from
+		product p left join productclass k on (p.kind_id= k.id)
+		<include refid="conditionSql" />
+		limit #{start},#{rows}
+	</select>
+</mapper>

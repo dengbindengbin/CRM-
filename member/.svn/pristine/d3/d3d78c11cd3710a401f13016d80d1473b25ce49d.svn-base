@@ -1,0 +1,43 @@
+package com._520it.crm.domain;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Setter@Getter
+public class Stockoutcomebillitem {
+    private Long id;
+
+    private Product product;//商品
+
+    private String oddNumbers;
+
+    private String serialNumber;
+
+    private Client client;//记得要改的
+
+    private BigDecimal saleprice;
+
+    private Double discount;
+
+    private BigDecimal saleamount;
+
+    private Long number;
+
+    private String paytype;
+
+    private Store store;//记得要改的
+
+    private Store parent;//记得要改的
+    @JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date intputtime;
+
+}

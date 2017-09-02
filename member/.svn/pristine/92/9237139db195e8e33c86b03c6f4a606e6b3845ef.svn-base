@@ -1,0 +1,54 @@
+$(function(){
+	//设置系统当前时间
+	setInterval(function(){
+	var date = new Date();
+	var year = date.getFullYear();
+	var month = date.getMonth();
+	var day = date.getDate();
+	var hour = date.getHours();
+	var minute=date.getMinutes();
+	var second = date.getSeconds();
+	var h  =document.getElementById("hour");
+	var m = document.getElementById("minute");
+	var s = document.getElementById("second");
+	var y = document.getElementById("year");
+	var mon = document.getElementById("month");
+	var d = document.getElementById("day");
+	var y1 = document.getElementById("year1");
+	var mon1 = document.getElementById("month1");
+	var d1 = document.getElementById("day1");
+	console.log(year,month,day);
+	y.innerHTML=year;
+	mon.innerHTML=month+1;
+	y1.innerHTML=year;
+	mon1.innerHTML=month+1;
+	h.innerHTML=hour;
+	m.innerHTML=minute;
+	s.innerHTML=second;
+	d.innerHTML=day;
+	d1.innerHTML=day;
+	
+	},1000);
+	
+
+	$("#panelProduct").panel({
+		width:300,    
+		height:250
+	});
+	
+	
+	$("#product_datagrid").datagrid({
+		url:"/employee_list",
+		  columns:[[    
+		            {field:'username',title:'商品名称',width:90},    
+		            {field:'realname',title:'单价',width:90},    
+		            {field:'tel',title:'数量',width:90,align:'right'}    
+		        ]]    
+	});
+	
+
+	
+	
+	
+})
+

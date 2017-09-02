@@ -1,0 +1,47 @@
+package com._520it.crm.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com._520it.crm.domain.Classify;
+import com._520it.crm.domain.Department;
+import com._520it.crm.mapper.ClassifyMapper;
+import com._520it.crm.mapper.DepartmentMapper;
+import com._520it.crm.service.IClassifyService;
+import com._520it.crm.service.IDepartmentService;
+
+@Service
+public class ClassisyServiceImpl implements IClassifyService{
+	@Autowired
+	private ClassifyMapper mapper;
+
+	@Override
+	public int deleteByPrimaryKey(Long id) {
+		return mapper.deleteByPrimaryKey(id);
+	}
+
+	@Override
+	public int insert(Classify record) {
+		return 0;
+	}
+
+	@Override
+	public Classify selectByPrimaryKey(Long id) {
+		return null;
+	}
+
+	@Override
+	public List<Classify> selectAll() {
+		return mapper.selectAll();
+	}
+
+	@Override
+	public int updateByPrimaryKey(Classify record) {
+		return 0;
+	}
+
+	
+
+}

@@ -1,0 +1,22 @@
+package com._520it.crm.mapper;
+
+import java.util.List;
+
+import com._520it.crm.domain.Warehouse;
+import com._520it.crm.query.QueryObject;
+
+public interface WarehouseMapper {
+	int deleteByPrimaryKey(Long id);
+
+	int insert(Warehouse record);
+
+	Warehouse selectByPrimaryKey(Long id);
+
+	List<Warehouse> selectAll();
+
+	int updateByPrimaryKey(Warehouse record);
+
+	Long queryPageCount(QueryObject qo);
+
+	List<Warehouse> queryPageData(QueryObject qo);
+}

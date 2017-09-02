@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.IntegralChangeMapper" >
+    <resultMap id="BaseResultMap" type="com._520it.crm.domain.IntegralChange" >
+        <id column="id" property="id"  />
+        <result column="changecount" property="changecount"  />
+        <result column="sn" property="sn"  />
+        <result column="time" property="time"  />
+        <result column="remark" property="remark"  />
+        <result column="type" property="type"  />
+
+        <association property="member" javaType="com._520it.crm.domain.Member" columnPrefix="m_">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+        <association property="level" javaType="com._520it.crm.domain.MemberLevel" columnPrefix="mb_">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+</resultMap>
+<delete id="deleteByPrimaryKey" parameterType="long" >
+delete from integralChange where id = #{id}
+</delete>
+<insert id="insert" parameterType="com._520it.crm.domain.IntegralChange" useGeneratedKeys="true" keyProperty="id" >
+insert into integralChange
+(member_id,changecount,sn,time,level_id,remark,type)
+        values
+        (#{member.id},#{changecount},#{sn},#{time},#{level.id},#{remark},#{type})
+        </insert>
+<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.IntegralChange" >
+update integralChange
+set
+member_id=#{member.id},
+changecount=#{changecount},
+sn=#{sn},
+time=#{time},
+level_id=#{level.id},
+remark=#{remark},
+type=#{type}
+        where id = #{id}
+        </update>
+<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+select * from integralChange where id = #{id}
+</select>
+<select id="selectAll" resultMap="BaseResultMap" >
+select * from integralChange
+</select>
+     <sql id="conditionSql">
+     <where>
+         <if test="memberId!=null">
+            and  il.member_id =#{memberId}
+         </if>
+     </where>
+     </sql>
+     <select id="queryPageCount" resultType="long">
+     select count(il.id) from <include refid="sql_table"/>
+     <include refid="conditionSql"/>
+     </select>
+     <select id="queryPageData" resultMap="BaseResultMap">
+         SELECT <include refid="sql_colum"/> FROM <include refid="sql_table"/>
+     <include refid="conditionSql"/>
+     limit #{start},#{rows}
+     </select>
+    <!--抽取公共的table-->
+    <sql id="sql_table">
+        integralchange il
+         JOIN member m ON il.member_id = m.id
+         JOIN memberlevel mb ON il.level_id = mb.id
+    </sql>
+    <!--抽取公共的colum-->
+    <sql id="sql_colum">
+        m.id as m_id,m.name as m_name,il.changecount,m.sn,il.time,il.id,il.type,mb.id as mb_id,mb.name as mb_name,il.remark
+    </sql>
+
+    <!--依据会员信息表的id来查询出积分表的信息-->
+    <select id="load" resultMap="BaseResultMap">
+SELECT * FROM integralchange WHERE member_id=#{id}
+    </select>
+     </mapper>

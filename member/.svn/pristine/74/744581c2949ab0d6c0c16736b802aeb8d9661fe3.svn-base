@@ -1,0 +1,39 @@
+package com._520it.crm.web.controller;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com._520it.crm.domain.MemberPayment;
+import com._520it.crm.page.PageResult;
+import com._520it.crm.query.SearchQuery;
+import com._520it.crm.service.IMemberPaymentService;
+import com._520it.crm.service.IMemberService;
+import com._520it.crm.service.IRechargeService;
+import com._520it.crm.util.AjaxResult;
+import com._520it.crm.util.DateUtil;
+
+@Controller
+public class RechargeController {
+	@Autowired
+	private IMemberService memberService;
+	@Autowired
+	private IRechargeService rechargeService;
+	
+	@RequestMapping("/recharge")
+	public String index(){
+		return "recharge";
+	}
+	@SuppressWarnings("deprecation")
+	@RequestMapping("/recharge_list")
+	@ResponseBody
+	public List<MemberPayment> list() throws ParseException{
+		List<MemberPayment> membet = rechargeService.getMembet();
+		return membet;
+	}
+}

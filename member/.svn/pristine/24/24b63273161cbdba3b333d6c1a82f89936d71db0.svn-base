@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.MemberMapper" >
+    <resultMap id="BaseResultMap" type="com._520it.crm.domain.Member" >
+        <id column="id" property="id"  />
+        <result column="birthday" property="birthday"  />
+        <result column="phone" property="phone"  />
+        <result column="sn" property="sn"  />
+        <result column="payment" property="payment"  />
+        <result column="usedintegral" property="usedintegral"  />
+        <result column="remark" property="remark"  />
+        <result column="password" property="password"  />
+        <result column="totalConsume" property="totalConsume"  />
+        <result column="integral" property="integral"  />
+        <result column="address" property="address"  />
+        <result column="name" property="name"  />
+        <result column="gender" property="gender"  />
+        <result column="deadline" property="deadline"  />
+        <result column="qq" property="qq"  />
+        <result column="totalMoney" property="totalMoney"  />
+
+        <association property="referrer" column="referrer_id" select="selectByPrimaryKey"/>
+        <association property="level" column="level_id" select="com._520it.crm.mapper.MemberLevelMapper.selectByPrimaryKey"/>
+</resultMap>
+<delete id="deleteByPrimaryKey" parameterType="long" >
+delete from member where id = #{id}
+</delete>
+<insert id="insert" parameterType="com._520it.crm.domain.Member" useGeneratedKeys="true" keyProperty="id" >
+insert into member
+(birthday,phone,sn,payment,usedintegral,remark,password,totalConsume,integral,referrer,level,address,name,gender,deadline,qq,totalMoney)
+        values
+        (#{birthday},#{phone},#{sn},#{payment},#{usedintegral},#{remark},#{password},#{totalConsume},#{integral},#{referrer},#{level},#{address},#{name},#{gender},#{deadline},#{qq},#{totalMoney})
+        </insert>
+<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Member" >
+update member
+set
+birthday=#{birthday},
+phone=#{phone},
+sn=#{sn},
+payment=#{payment},
+usedintegral=#{usedintegral},
+remark=#{remark},
+password=#{password},
+totalConsume=#{totalConsume},
+ INFO [localhost-startStop-1] - {dataSource-1} inited
+ INFO [localhost-startStop-1] - Bean 'dataSource' of type [class com.alibaba.druid.pool.DruidDataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+integral=#{integral},
+referrer=#{referrer},
+level=#{level},
+address=#{address},
+name=#{name},
+gender=#{gender},
+deadline=#{deadline},
+qq=#{qq},
+totalMoney=#{totalMoney}
+        where id = #{id}
+        </update>
+<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+select * from member where id = #{id}
+</select>
+<select id="selectAll" resultMap="BaseResultMap" >
+select * from member
+</select>
+<sql id="conditionSql">
+<where>
+</where>
+</sql>
+<select id="queryPageCount" resultType="long">
+select count(0) from member
+<include refid="conditionSql"/>
+</select>
+<select id="queryPageData" resultMap="BaseResultMap">
+select * from member
+<include refid="conditionSql"/>
+limit #{start},#{rows}
+</select>
+        </mapper>

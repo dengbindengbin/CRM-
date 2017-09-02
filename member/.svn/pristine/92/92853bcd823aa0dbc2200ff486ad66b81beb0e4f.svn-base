@@ -1,0 +1,113 @@
+function TodaySearch(timeSearch){
+	$("#memberPayment_datagrid").datagrid('reload',{
+		'amount':timeSearch,
+		'payment':null
+	});
+}
+
+function AllSearch(){
+	$("#memberPayment_datagrid").datagrid('reload',{});
+}
+
+function doSearch(value,name){
+	$("#memberPayment_datagrid").datagrid('reload',{
+		name:name,
+		value : value
+	});
+	alert('You input: ' + value+'('+name+')');
+}
+$(function (){
+	var options=$("#cc").combobox("options");
+	console.debug(options);
+	options.onSelect=function (recode){
+		console.debug(recode);
+		$("#memberPayment_datagrid").datagrid('reload',{
+			'payment':recode.value
+		});
+	}
+	//------------------------------------------
+	$("#memberPayment_datagrid").datagrid({
+	    url:"/recharge_list",
+	    fitColumns : true,
+	    striped : true,
+	    fit : true,
+	    pagination : true,
+	    singleSelect : true,
+	    onClickRow:function(rowIndex, rowData){
+	    	console.debug(rowData);
+	    	var sn=rowData.sn;
+	    	var sum=0;
+	    	var name;
+	    	var cost=0;
+	    	//使用同步的方式获取数据
+			 var ids = $.ajax({
+				  url: "/recharge_change?sn="+sn,
+				  async: false //同步
+				 }).responseText;
+			 ids = $.parseJSON(ids);
+			 cost=ids[0]["member"].totalConsume;
+			 console.debug(cost);
+			 for ( var int = 0; int < ids.length; int++) {
+				console.debug("money:"+ids[int].totalMoney);
+				sum=sum+ids[int].totalMoney;
+				name=ids[int]["member"].name;
+			}
+			 console.debug("总金额为:"+sum);
+			 $("#usercount").html(cost);
+			  $("#recelivableCount").html(sum);
+			  $("#recelivableName").html(name);
+	    	/* $.get("/recharge_change",{sn:sn},function (data) {
+		            console.log(data)
+		            for ( var int = 0; int < data.length; int++) {
+						console.debug(data[int].totalMoney);
+					}
+		            $("#bircount").html(data.memberName)
+		            $("#usercount").html(data.totalMembers)
+		            $("#recelivableCount").html(data.totalAmount)
+		        })*/
+	    },
+	    toolbar:'#member_datagrid_tb',
+	    onBeforeLoad:function () {
+	   /* 	var allcost=0;
+	    	//使用同步的方式获取数据
+			 var ids = $.ajax({
+				  url: "/recharge_list",
+				  async: false //同步
+				 }).responseText;
+			 ids = $.parseJSON(ids);
+			 for ( var int = 0; int < ids.length; int++) {
+				allcost=allcost+ids[int]["member"].totalConsume;
+			}*/
+			 //-----------------------------------------
+	        $.get("/member_load",function (data) {
+	            console.log(data)
+	            $("#bircount").html(data.memberName)
+	            $("#recelivableCount").html(data.totalAmount)
+	            $("#recelivableName").html("以下所有");
+	            $("#usercount").html(7988)
+	        })
+	    }
+	});
+	
+})
+
+
+function paytypeFormatter(value,row,index) {
+
+    if (value == 1) {
+
+        return "<font style='color: #CC2222'>现金</font>"
+
+    } else if (value == 2) {
+
+        return "<font style='color: #00ee00'>微信</font>"
+
+    } else if (value == 3) {
+
+        return "<font style='color: #0000FF'>支付宝</font>"
+
+    } else if (value == 4) {
+
+        return "<font style='color: #985f0d'>银行卡</font>"
+    }
+}

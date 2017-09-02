@@ -1,0 +1,111 @@
+$(function(){
+	/*
+	 * 抽取所有需要用得元素.
+	 */
+	var memberDatagrid,memberDialog,memberForm;
+	memberDatagrid = $("#member_datagrid");
+	memberDialog = $("#member_dialog");
+	memberForm = $("#member_form");
+	/*
+	 * 初始化数据表格 
+	 */
+	memberDatagrid.datagrid({
+		url:"/member_list",
+        fitColumns : true,
+        striped : true,
+        fit : true,
+        pagination : true,
+        singleSelect : true,
+		toolbar:'#member_datagrid_tb'
+	});
+	/*
+	 * 初始化新增/编辑对话框 
+	 */
+	memberDialog.dialog({
+		width:600,
+		height:600,
+		closed:true,
+		buttons:'#member_dialog_bt'
+	});
+	/*
+	 * 对页面按钮进行统一监听
+	 */
+	$("a[data-cmd]").on("click",function(){
+		var cmd = $(this).data("cmd");
+		if(cmd){
+			cmdObj[cmd]();
+		}
+	});
+	/*
+	 * 所有的操作封装到cmdObj对象中,方便管理
+	 */
+	var cmdObj = {
+			 add:function(){
+				memberForm.form("clear");
+				memberDialog.dialog("setTitle","新增");
+				memberDialog.dialog("open");
+			},
+			edit:function(){
+				var rowData = memberDatagrid.datagrid("getSelected");
+				if(rowData){
+					memberForm.form("clear");
+					memberDialog.dialog("setTitle","编辑");
+					memberDialog.dialog("open");
+					if(rowData.dept)
+						rowData["dept.id"] = rowData.dept.id;
+					memberForm.form("load",rowData);
+				}else{
+					$.messager.alert("温馨提示","请选择需要编辑的数据!","warining");
+				}
+			},
+			del:function(){
+				var rowData = memberDatagrid.datagrid("getSelected");
+				if(rowData){
+					$.messager.confirm("温馨提示","您确定需要删除选中数据吗？",function(yes){
+						if(yes){
+							$.get("/member_delete?memberId="+rowData.id,function(data){
+								if(data.success){
+									$.messager.alert("温馨提示",data.msg,"info",function(){
+										memberDatagrid.datagrid("reload");
+									});
+								}else{
+									$.messager.alert("温馨提示",data.msg,"error");
+								}
+							},"json")
+						}
+					});
+				}else{
+					$.messager.alert("温馨提示","请选择需要删除的数据!","warining");
+				}
+			},
+			reload:function(){
+				memberDatagrid.datagrid("reload");
+			},
+			save:function(){
+				var url;
+				var idVal = $("[name='id']").val();
+				if(idVal){
+					url = "/member_update"
+				}else{
+					url = "/member_save";
+				}
+				memberForm.form("submit",{
+					url:url,
+					success:function(data){
+						data = $.parseJSON(data);
+						if(data.success){
+							$.messager.alert("温馨提示",data.msg,"info",function(){
+								memberDialog.dialog("close");
+								memberDatagrid.datagrid("reload");
+							});
+						}else{
+							$.messager.alert("温馨提示",data.msg,"error");
+						}
+					}
+				});
+			},
+			cancel:function (){
+				memberDialog.dialog("close");
+			}
+	}
+});

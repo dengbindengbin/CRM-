@@ -1,0 +1,28 @@
+package com._520it.crm.service;
+import java.math.BigDecimal;
+import java.util.List;
+
+import com._520it.crm.domain.Member;
+import com._520it.crm.page.PageResult;
+import com._520it.crm.query.QueryObject;
+import com._520it.crm.util.AjaxResult;
+import com._520it.crm.vo.MemberVo;
+
+public interface IMemberService {
+	int deleteByPrimaryKey(Long id);
+    int insert(Member record);
+    Member selectByPrimaryKey(Long id);
+    List<Member> selectAll();
+    int updateByPrimaryKey(Member record);
+	PageResult queryPage(QueryObject qo);
+
+	MemberVo load();
+
+    int memberByPaymentId(Long id, BigDecimal totalMoney);
+
+    int IntegralChangeByPaymentId(Long id, BigDecimal integral);
+
+    int memberdeleteIntegral(Long id);
+
+    int memberState(Long id ,int state);
+}

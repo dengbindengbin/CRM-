@@ -1,0 +1,21 @@
+package com._520it.crm.domain;
+
+import genertor.ObjectProp;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@ObjectProp("商品类型")
+public class SmallClassify {
+	private Long id;
+	private String name;	
+	@ObjectProp("父分类ID")
+	private Long parentId;
+}

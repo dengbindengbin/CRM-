@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.PurchaseOrderMapper">
+	<resultMap id="BaseResultMap" type="com._520it.crm.domain.PurchaseOrder">
+		<id column="id" property="id" />
+		<result column="aggregate" property="aggregate" />
+		<result column="sn" property="sn" />
+		<result column="intTime" property="intTime" />
+		<result column="payment" property="payment" />
+		<result column="state" property="state" />
+		<result column="number" property="number" />
+
+		<association property="warehouseId" javaType="com._520it.crm.domain.Warehouse">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+		</association>
+		<association property="supplierId" javaType="com._520it.crm.domain.Supplier">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+		</association>
+		<association property="productId" javaType="com._520it.crm.domain.Product">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="sn" column="sn" />
+			<result property="price" column="price" />
+			<result property="costPrice" column="costPrice" />
+			<result property="stock" column="stock" />
+			<result property="units" column="units" />
+			<association property="kind"
+				javaType="com._520it.crm.domain.ProductClassify">
+				<result property="id" column="id" />
+				<result property="name" column="name" />
+			</association>
+		</association>
+	</resultMap>
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		delete from
+		purchaseOrder where id = #{id}
+	</delete>
+	<insert id="insert" parameterType="com._520it.crm.domain.PurchaseOrder"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into purchaseOrder
+		(aggregate,sn,intTime,payment,supplier_id,state,number,warehouse_id,product_id)
+		values
+		(#{aggregate},#{sn},#{intTime},#{payment},#{supplier.id},#{state},#{number},#{warehouse.id},#{product.id})
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.PurchaseOrder">
+		update
+		purchaseOrder
+		set
+		aggregate=#{aggregate},
+		sn=#{sn},
+		intTime=#{intTime},
+		payment=#{payment},
+		supplier_id=#{supplier.id},
+		state=#{state},
+		number=#{number},
+		warehouse_id=#{warehouse.id}
+		product_id=#{product.id}
+		where id = #{id}
+	</update>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="long">
+		select * from purchaseOrder where id = #{id}
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap">
+		select * from purchaseOrder
+	</select>
+	<sql id="conditionSql">
+		<where>
+		</where>
+	</sql>
+	<select id="queryPageCount" resultType="long">
+		select count(0) from purchaseOrder
+		<include refid="conditionSql" />
+	</select>
+	<select id="queryPageData" resultMap="BaseResultMap">
+		select * from purchaseOrder
+		<include refid="conditionSql" />
+		limit #{start},#{rows}
+	</select>
+</mapper>

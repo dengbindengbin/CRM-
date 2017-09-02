@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.ProductClassifyMapper">
+	<resultMap id="BaseResultMap" type="com._520it.crm.domain.ProductClassify">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+	</resultMap>
+
+
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		delete from productclass
+		where id = #{id}
+	</delete>
+
+	<insert id="insert" parameterType="com._520it.crm.domain.ProductClassify"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into productclass
+		(name)
+		values
+		(#{name})
+	</insert>
+
+	<update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.ProductClassify">
+		update productclass
+		set
+		name=#{name}
+		where id = #{id}
+	</update>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="long">
+		select * from productclass where id = #{id}
+	</select>
+
+
+	<select id="selectAll" resultMap="BaseResultMap">
+		select * from productclass
+	</select>
+
+	<sql id="conditionSql">
+		<where>
+		</where>
+	</sql>
+	<select id="queryPageCount" resultType="long">
+		select count(*) from productclass
+		<include refid="conditionSql" />
+	</select>
+	<select id="queryPageData" resultMap="BaseResultMap">
+		select * from productclass
+		<include refid="conditionSql" />
+		limit #{start},#{rows}
+	</select>
+	
+	<!-- 处理角色和权限中间表,关联关系 -->
+<!-- 	<insert id="insertRelation"> -->
+<!-- 		insert into prodcut_productclass(prodcut_id,productclass_id) -->
+<!-- 		values(#{prodcutId},#{kendId}) -->
+<!-- 	</insert> -->
+
+	<!-- 打破关系 -->
+<!-- 	<delete id="deleteRelation"> -->
+<!-- 		delete from prodcut_productclass -->
+<!-- 		where prodcut_id = #{productclassId} -->
+<!-- 	</delete> -->
+	
+<!-- 	<select id="getKindIdByProdcutId" resultType="long"> -->
+<!-- 		select productclass_id  -->
+<!-- 		from prodcut_productclass  -->
+<!-- 		where prodcut_id = #{prodcutId} -->
+<!-- 	</select> -->
+
+<!-- 	<select id="getproductclassSnByProdcutId" resultType="string"> -->
+<!-- 		select k.name -->
+<!-- 		from -->
+<!-- 		productclass k left join prodcut_productclass pk ON (pk.productclass_id = k.id) -->
+<!-- 		where pk.prodcut_id = #{prodcutId} -->
+<!-- 	</select> -->
+
+</mapper>

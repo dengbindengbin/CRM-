@@ -1,0 +1,112 @@
+$(function(){
+	/*
+	 * 抽取所有需要用得元素.
+	 */
+	var purchaseOrderDatagrid,purchaseOrderDialog,purchaseOrderForm;
+	purchaseOrderDatagrid = $("#purchaseOrder_datagrid");
+	purchaseOrderDialog = $("#purchaseOrder_dialog");
+	purchaseOrderForm = $("#purchaseOrder_form");
+	/*
+	 * 初始化数据表格 
+	 */
+	purchaseOrderDatagrid.datagrid({
+		url:"/purchaseOrder_list",
+		fit:true,
+		rownumbers:true,
+		singleSelect:true,
+		striped:true,
+		pagination:true,
+		fitColumns:true,
+		toolbar:'#purchaseOrder_datagrid_tb'
+	});
+	/*
+	 * 初始化新增/编辑对话框 
+	 */
+	purchaseOrderDialog.dialog({
+		width:300,
+		height:300,
+		closed:true,
+		buttons:'#purchaseOrder_dialog_bt'
+	});
+	/*
+	 * 对页面按钮进行统一监听
+	 */
+	$("a[data-cmd]").on("click",function(){
+		var cmd = $(this).data("cmd");
+		if(cmd){
+			cmdObj[cmd]();
+		}
+	});
+	/*
+	 * 所有的操作封装到cmdObj对象中,方便管理
+	 */
+	var cmdObj = {
+			 add:function(){
+				purchaseOrderForm.form("clear");
+				purchaseOrderDialog.dialog("setTitle","新增");
+				purchaseOrderDialog.dialog("open");
+			},
+			edit:function(){
+				var rowData = purchaseOrderDatagrid.datagrid("getSelected");
+				if(rowData){
+					purchaseOrderForm.form("clear");
+					purchaseOrderDialog.dialog("setTitle","编辑");
+					purchaseOrderDialog.dialog("open");
+					if(rowData.dept)
+						rowData["dept.id"] = rowData.dept.id;
+					purchaseOrderForm.form("load",rowData);
+				}else{
+					$.messager.alert("温馨提示","请选择需要编辑的数据!","warining");
+				}
+			},
+			del:function(){
+				var rowData = purchaseOrderDatagrid.datagrid("getSelected");
+				if(rowData){
+					$.messager.confirm("温馨提示","您确定需要删除选中数据吗？",function(yes){
+						if(yes){
+							$.get("/purchaseOrder_delete?purchaseOrderId="+rowData.id,function(data){
+								if(data.success){
+									$.messager.alert("温馨提示",data.msg,"info",function(){
+										purchaseOrderDatagrid.datagrid("reload");
+									});
+								}else{
+									$.messager.alert("温馨提示",data.msg,"error");
+								}
+							},"json")
+						}
+					});
+				}else{
+					$.messager.alert("温馨提示","请选择需要删除的数据!","warining");
+				}
+			},
+			reload:function(){
+				purchaseOrderDatagrid.datagrid("reload");
+			},
+			save:function(){
+				var url;
+				var idVal = $("[name='id']").val();
+				if(idVal){
+					url = "/purchaseOrder_update"
+				}else{
+					url = "/purchaseOrder_save";
+				}
+				purchaseOrderForm.form("submit",{
+					url:url,
+					success:function(data){
+						data = $.parseJSON(data);
+						if(data.success){
+							$.messager.alert("温馨提示",data.msg,"info",function(){
+								purchaseOrderDialog.dialog("close");
+								purchaseOrderDatagrid.datagrid("reload");
+							});
+						}else{
+							$.messager.alert("温馨提示",data.msg,"error");
+						}
+					}
+				});
+			},
+			cancel:function (){
+				purchaseOrderDialog.dialog("close");
+			}
+	}
+});

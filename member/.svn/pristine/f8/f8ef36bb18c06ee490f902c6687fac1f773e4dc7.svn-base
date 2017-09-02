@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "text": "会员等级筛选",
+    "iconCls":"icon-person",
+    "attributes":{"levelId":0},
+    "children": [
+      {
+        "id": 11,
+        "text": "普通等级",
+        "attributes":{"levelId":1}
+      },{
+        "id": 12,
+        "text": "黄金等级",
+        "iconCls":"icon-member",
+        "attributes":{"levelId":2}
+      },{
+        "id": 13,
+        "text": "白金等级",
+        "iconCls":"icon-member2",
+        "attributes":{"levelId":3}
+      },{
+        "id": 14,
+        "text": "钻石等级",
+        "iconCls":"icon-member3",
+        "attributes":{"levelId":4}
+      },{
+        "id": 15,
+        "text": "终身会员",
+        "iconCls":"icon-person2",
+        "attributes":{"levelId":5}
+      }
+    ]
+  }
+]

@@ -1,0 +1,140 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>会员管理管理</title>
+<%@include file="/static/common/common.jsp" %>
+<script type="text/javascript" src="/static/js/member.js"></script>
+</head>
+<body>
+
+<div id="cc" class="easyui-layout" fit=true>
+
+	<div data-options="region:'west',title:'会员等级',split:true" style="width:150px;background-color:darkgrey">
+		<ul id="member_tree" class="easyui-tree">
+
+		</ul>
+	</div>
+
+	<div data-options="region:'center',title:'会员列表'" style="padding:5px;background:#259926;"
+		 style="width:100px;">
+	<!-- 数据表格 -->
+	<table id="member_datagrid">
+		<thead>
+			<tr>
+				<th data-options="field:'birthday',width:10,align:'center'">生日</th>
+				<th data-options="field:'phone',width:10,align:'center'">电话号码</th>
+				<th data-options="field:'sn',width:10,align:'center'">会员卡号</th>
+				<th data-options="field:'payment',width:10,align:'center'">会员支付方式</th>
+				<th data-options="field:'usedintegral',width:10,align:'center'">已使用积分</th>
+				<th data-options="field:'remark',width:10,align:'center'">会员备注</th>
+				<th data-options="field:'password',width:10,align:'center'">会员密码</th>
+				<th data-options="field:'totalConsume',width:10,align:'center'">卡上余额</th>
+				<th data-options="field:'integral',width:10,align:'center'">会员积分</th>
+				<th data-options="field:'referrer',width:10,align:'center'">推荐人</th>
+				<th data-options="field:'level',width:10,align:'center'">会员等级</th>
+				<th data-options="field:'address',width:10,align:'center'">会员家庭地址</th>
+				<th data-options="field:'name',width:10,align:'center'">会员姓名</th>
+				<th data-options="field:'gender',width:10,align:'center'">性别</th>
+				<th data-options="field:'deadline',width:10,align:'center'">过期时间</th>
+				<th data-options="field:'qq',width:10,align:'center'">QQ</th>
+				<th data-options="field:'totalMoney',width:10,align:'center'">开卡总金额</th>
+			</tr>
+		</thead>
+	</table>
+	<!-- 新增编辑对话框 -->
+	<div id="member_dialog">
+		<form id="member_form" method="post">
+		<table align="center" style="margin-top: 15px;">
+			<input type="hidden" name="id">
+			<tr>
+				<td>生日</td>
+				<td><input type="text" name="birthday"></td>
+			</tr>
+			<tr>
+				<td>电话号码</td>
+				<td><input type="text" name="phone"></td>
+			</tr>
+			<tr>
+				<td>会员卡号</td>
+				<td><input type="text" name="sn"></td>
+			</tr>
+			<tr>
+				<td>会员支付方式</td>
+				<td><input type="text" name="payment"></td>
+			</tr>
+			<tr>
+				<td>已使用积分</td>
+				<td><input type="text" name="usedintegral"></td>
+			</tr>
+			<tr>
+				<td>会员备注</td>
+				<td><input type="text" name="remark"></td>
+			</tr>
+			<tr>
+				<td>会员密码</td>
+				<td><input type="text" name="password"></td>
+			</tr>
+			<tr>
+				<td>卡上余额</td>
+				<td><input type="text" name="totalConsume"></td>
+			</tr>
+			<tr>
+				<td>会员积分</td>
+				<td><input type="text" name="integral"></td>
+			</tr>
+			<tr>
+				<td>推荐人</td>
+				<td><input type="text" name="referrer"></td>
+			</tr>
+			<tr>
+				<td>会员等级</td>
+				<td><input type="text" name="level"></td>
+			</tr>
+			<tr>
+				<td>会员家庭地址</td>
+				<td><input type="text" name="address"></td>
+			</tr>
+			<tr>
+				<td>会员姓名</td>
+				<td><input type="text" name="name"></td>
+			</tr>
+			<tr>
+				<td>性别</td>
+				<td><input type="text" name="gender"></td>
+			</tr>
+			<tr>
+				<td>过期时间</td>
+				<td><input type="text" name="deadline"></td>
+			</tr>
+			<tr>
+				<td>QQ</td>
+				<td><input type="text" name="qq"></td>
+			</tr>
+			<tr>
+				<td>开卡总金额</td>
+				<td><input type="text" name="totalMoney"></td>
+			</tr>
+		</table>
+		</form>
+	</div>
+	<!-- 数据表格CRUD按钮 -->
+	<div id="member_datagrid_tb">
+		<div>
+			<a class="easyui-linkbutton" iconCls="icon-add" plain="true" data-cmd="add">新增</a>
+			<a class="easyui-linkbutton" iconCls="icon-edit" plain="true" data-cmd="edit">編輯</a>
+			<a class="easyui-linkbutton" iconCls="icon-remove" plain="true" data-cmd="del">刪除</a>
+			<a class="easyui-linkbutton" iconCls="icon-reload" plain="true" data-cmd="reload">刷新</a>
+		</div>
+	</div>
+	<!-- 对话框保存取消按钮 -->
+	<div id="member_dialog_bt">
+		<a class="easyui-linkbutton" iconCls="icon-save" plain="true" data-cmd="save">保存</a>
+		<a class="easyui-linkbutton" iconCls="icon-cancel" plain="true" data-cmd="cancel">取消</a>
+	</div>
+	</div>
+</div>
+</body>
+</html>

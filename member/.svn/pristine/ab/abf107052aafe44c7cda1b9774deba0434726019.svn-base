@@ -1,0 +1,216 @@
+$(function(){
+	/*
+	 * 抽取所有需要用得元素.
+	 */
+	var warehouseDatagrid,warehouseDialog,warehouseForm;
+	warehouseDatagrid = $("#warehouse_datagrid");
+	warehouseDialog = $("#warehouse_dialog");
+	warehouseForm = $("#warehouse_form");
+	/*
+	 * 初始化数据表格 
+	 */
+	warehouseDatagrid.datagrid({
+		url:"/warehouse_list",
+		fit:true,
+		rownumbers:true,
+		singleSelect:true,
+		striped:true,
+		pagination:true,
+		fitColumns:true,
+		toolbar:'#warehouse_datagrid_tb',
+		columns:[[
+			{field:'sn',title:'仓库编码',width:100,align:'center'},
+			{field:'wname',title:'仓库名称',width:100,align:'center'},
+			{field:'name',title:'联系人',width:100,align:'center'},
+			{field:'phone',title:'联系号码',width:100,align:'center'},
+			{field:'address',title:'地址',width:100,align:'center'},
+			{field:'state',title:'仓库状态',width:100,align:'center',formatter:stateFormatter},
+			{field:'addDate',title:'添加仓库时间',width:100,align:'center'},
+			{field:'remark',title:'备注信息',width:100,align:'center'},
+			{field:'product',title:'操作',width:100,align:'center',formatter:checkFormatter}
+		]],
+		onClickRow : function(rowIndex, rowData) {
+			// 如果当前行的状态是关闭,就禁用仓库
+			if (!rowData.state) {
+				// 禁用按钮
+				$("#warehouse_tb_edit").linkbutton('disable');
+			} else {
+				// 显示按钮
+				$("#warehouse_tb_edit").linkbutton('enable');
+			}
+		}
+	});
+	
+	// 状态格式化
+	function stateFormatter(value, row, index) {
+		//return value ? "启用" : "关闭";
+		if(value){
+		  return "<font style='color:green'>启用</font>";
+		}
+		return "<font style='color:red'>关闭</font>";
+	}
+	
+	function checkFormatter(value,row,index){
+		// 根据仓库的id跳转查询对应商品
+			return "<a href=javascript:data("+row.id+");>查看库存</a>";
+			//return "<a href=/product?parent_id="+row.id + ">查看库存</a>";
+	}
+	
+	/*
+	 * 初始化新增/编辑对话框 
+	 */
+	warehouseDialog.dialog({
+		width:300,
+		height:300,
+		closed:true,
+		buttons:'#warehouse_dialog_bt'
+	});
+	/*
+	 * 对页面按钮进行统一监听
+	 */
+	$("a[data-cmd]").on("click",function(){
+		var cmd = $(this).data("cmd");
+		if(cmd){
+			cmdObj[cmd]();
+		}
+	});
+	/*
+	 * 所有的操作封装到cmdObj对象中,方便管理
+	 */
+	var cmdObj = {
+		 add:function(){
+			warehouseForm.form("clear");
+			warehouseDialog.dialog("setTitle","新增");
+			warehouseDialog.dialog("open");
+		},
+		edit:function(){
+			var rowData = warehouseDatagrid.datagrid("getSelected");
+			if(rowData){
+				warehouseForm.form("clear");
+				warehouseDialog.dialog("setTitle","编辑");
+				warehouseDialog.dialog("open");
+				if(rowData.dept)
+					rowData["dept.id"] = rowData.dept.id;
+				warehouseForm.form("load",rowData);
+			}else{
+				$.messager.alert("温馨提示","请选择需要编辑的数据!","warining");
+			}
+		},
+		del:function(){
+			var rowData = warehouseDatagrid.datagrid("getSelected");
+			if(rowData){
+				$.messager.confirm("温馨提示","您确定需要删除选中数据吗？",function(yes){
+					if(yes){
+						$.get("/warehouse_delete?warehouseId="+rowData.id,function(data){
+							if(data.success){
+								$.messager.alert("温馨提示",data.msg,"info",function(){
+									warehouseDatagrid.datagrid("reload");
+								});
+							}else{
+								$.messager.alert("温馨提示",data.msg,"error");
+							}
+						},"json")
+					}
+				});
+			}else{
+				$.messager.alert("温馨提示","请选择需要删除的数据!","warining");
+			}
+		},
+
+		// 设置为是否
+		changeState : function() {
+			// 判断是否选中数据
+			var row = warehouseDatagrid.datagrid("getSelected");
+			if (!row) {
+				$.messager.alert('温馨提示', '请选中一条数据!', 'info');
+				return;
+			}
+			// 弹出确认框
+			$.messager.confirm('确认对话框', '您想要改变状态码？', function(r) {
+				if (r) {
+					$.post("/warehouse_changeState", {
+						id : row.id
+					}, function(data) {
+						$.messager.alert('温馨提示', data.msg, 'info', function() {
+							// 刷新数据表格(保持在当前页)
+							warehouseDatagrid.datagrid("reload");
+						});
+					})
+				}else{
+					$.post("/warehouse_changeState", {
+						id : row.id
+					}, function(data) {
+						$.messager.alert('温馨提示', data.msg, 'info', function() {
+							// 刷新数据表格(保持在当前页)
+							warehouseDatagrid.datagrid("reload");
+						});
+					})
+				}
+			});
+
+		},
+		reload:function(){
+			warehouseDatagrid.datagrid("reload");
+		},
+		save:function(){
+			var url;
+			var idVal = $("[name='id']").val();
+			if(idVal){
+				url = "/warehouse_update"
+			}else{
+				url = "/warehouse_save";
+			}
+			warehouseForm.form("submit",{
+				url:url,
+				success:function(data){
+					
+					data = $.parseJSON(data);
+					if(data.success){
+						$.messager.alert("温馨提示",data.msg,"info",function(){
+							warehouseDialog.dialog("close");
+							warehouseDatagrid.datagrid("reload");
+						});
+					}else{
+						$.messager.alert("温馨提示",data.msg,"error");
+					}
+				}
+			});
+		},
+		cancel:function (){
+			warehouseDialog.dialog("close");
+		}
+	}
+});
+
+function data(value){
+	
+	$("#warehouse_dialog_data").dialog({
+		title: '库存',
+		width:700,
+		height:500,
+		cache:false,
+		closed:false,
+		modal:true
+	});
+	var row = $("#warehouse_datagrid").datagrid("getSelected");
+	$("#warehouse_datagrid_data").datagrid({
+		url:'/productByWarehouseId_list?id='+row.id,
+		singleSelect:true,
+		fit:true,
+		rownumbers:true,
+		fitColumns:true,
+		cache:false,
+	    columns:[[    
+	        {field:'sn',title:'编码',width:100},
+	        {field:'name',title:'商品名称',width:100},
+	        {field:'stock',title:'数量',width:100},
+	        {field:'units',title:'单位',width:100},
+	        {field:'price',title:'单价',width:100},
+	        {field:'totalprice',title:'金额',width:100,formatter:priceFormatter} 
+	        ]]
+	}); 
+	
+	function priceFormatter(value,row,index){
+		return row.stock * row.price;
+	}
+}
